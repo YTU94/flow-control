@@ -6,16 +6,16 @@
     <section class="form">
       <div class="form-group">
         <label for="" class="form-label">用户名:</label>
-        <input type="text" class="form-input">
-        <i class="iconfont icon-cha"></i>
+        <input type="text" v-model="userName" class="form-input">
+        <i @click="userName = '', password = '', company = ''" class="iconfont icon-cha"></i>
       </div>
       <div class="form-group">
-        <label for="" class="form-label">密&nbsp;&nbsp;&nbsp;&nbsp;码:</label>
-        <input type="text" class="form-input">
+        <label for="" class="form-label" >密&nbsp;&nbsp;&nbsp;&nbsp;码:</label>
+        <input type="password" v-model="password" class="form-input">
       </div>
       <div class="form-group">
         <label for="" class="form-label">公司名:</label>
-        <input type="text" class="form-input">
+        <input type="text" v-model="company" class="form-input">
       </div>
     </section>
     <section class="login-btn">
@@ -25,13 +25,33 @@
 </template>
 
 <script>
+import api from './../../api/api'
 export default {
   data () {
-    return {}
+    return {
+      // user
+      userName: '毛乐军',
+      password: 'mlj123456',
+      company: '35号地块'
+    }
   },
   methods: {
-    login () {
-      this.$router.push('/home')
+    login() {
+      api.login(this.userName, this.password, this.company)
+        .then(res => {
+          if (res.code === 200) {
+            console.log('登陆成功')
+            // id token 存入 sessionStorage
+            sessionStorage.id = res.message.id
+            sessionStorage.token = res.message.token
+            this.$router.push('/home')
+          } else {
+            console.log('登录失败')
+          }
+        })
+        .catch(error => {
+          console.log(error)
+        })
     }
   }
 }
@@ -67,7 +87,7 @@ export default {
           outline none
           border none
           background none
-          padding-left .2rem
+          // padding-left .2rem
         .iconfont
           float right  
     .login-btn

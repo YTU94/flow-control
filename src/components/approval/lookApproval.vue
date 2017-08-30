@@ -1,6 +1,6 @@
 <template>
   <div class="lookApproval">
-    <m-header links='/' msg="资金审批"></m-header>
+    <m-header links='/approval' msg="资金审批"></m-header>
     <div class="main-body">
       <!-- main body -->
       <div class="flow">
@@ -11,16 +11,17 @@
         <p class="f-content-s">004-水泥 （带） -5000</p>
       </div>
       <div class="flow">
-        <p class="f-content">编号：454455</p>
-        <p class="f-content">名称：资金审批</p>
-        <p class="f-content">材料：</p>
-        <p class="f-content-s">004-水泥 （带） -5000</p>
+        <p class="f-content">发起人：小王</p>
+        <p class="f-content">审批内容：</p>
+        <p class="f-content-s">改消费属于垃圾消费，渣渣的是多少卡的空间撒谎的课件撒是的辉煌科技时代监控和撒的结合</p>        
+        <p class="f-content">提出人：出纳丽丽</p>
+        <p class="f-content">提交意见：</p>
+        <p class="f-content-s">没问题</p>
       </div>
       <div class="flow">
-        <p class="f-content">编号：454455</p>
-        <p class="f-content">名称：资金审批</p>
-        <p class="f-content">材料：</p>
-        <p class="f-content-s">004-水泥 （带） -5000</p>
+        <p class="f-content">审批人：流程发起人张总</p>
+        <p class="f-content">生僻意见：</p>
+        <p class="f-content-s">没问题</p>
       </div>
       <!-- 审核状态 -->
       <div class="state">
@@ -54,6 +55,7 @@
 </template>
 
 <script>
+import api from 'api/api'
 import MHeader from 'components/m-header/m-header'
 export default {
   components: {
@@ -67,15 +69,26 @@ export default {
       isActive2: false
     }
   },
-  computed: {
-    unActive () {
-      return this.isActive === true ? 0 : 1
-    }
+  created () {
+    console.log(this.$route.params)
+    this._getApprovalInfo(sessionStorage.id, sessionStorage.token, this.$route.params.fid)
   },
   methods: {
-    showSelect () {
+    showSelect() {
       this.select = this.select === 0 ? 1 : 0
       this.$refs.icon.className = this.select === 0 ? 'iconfont icon-xiangxia float-right' : 'iconfont icon-xiangshang float-right'
+    },
+    // 获取审批详情
+    _getApprovalInfo(uid, token, fid) {
+      api.getApprovalInfo(uid, token, fid)
+        .then(res => {
+          if (res.code === 200) {
+            console.log(res)
+          }
+        })
+        .catch(error => {
+          console.log(error)
+        })
     }
   }
 }

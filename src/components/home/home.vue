@@ -4,14 +4,16 @@
       远航科技有限公司
     </div>
     <div class="main-body">
-      <router-link tag="div" class="task" to="/approvalDetail">
-        <p>名称: {{}}</p>
-        <p>审批流程: {{}}</p>  
+      <router-link tag="div"  class="task" :to="{name: 'approvalDetail', params: {name: item.pname, id: item.id, nodeArray: item.nodeArray, start: item.start}}" v-for="item in approvalList" :key="item.id">
+        <p class="line-h">名称: {{item.pname}}</p>
+        <p class="line-h">审批流程: </p>
+        <p>{{item.nodeArray}}</p>  
       </router-link>
-      <section class="task">
-        <p>名称: {{}}</p>
-        <p>审批流程: {{}}</p>  
-      </section>      
+      <!-- <section class="task bg-blue">
+        <p class="line-h">名称: {{}}</p>
+        <p class="line-h">审批流程</p>
+        <p>会计-仓管员-水电施工员-出纳-流程发起人-项目经理-材料员-公司经理</p>  
+      </section>       -->
       <div class="add-btn">
         <router-link to="/addFlow" tag="div">
           <i class="iconfont icon-jia"></i>添加流程          
@@ -24,18 +26,45 @@
 
 <script>
 import MFooter from 'components/m-footer/m-footer'
+import api from 'api/api'
 export default {
   components: {
     MFooter
   },
   data () {
-    return {}
+    return {
+      approvalList: []
+    }
+  },
+  created() {
+    // 获取审批流程
+    api.getApproval(sessionStorage.id, sessionStorage.token)
+      .then(res => {
+        if (res.code === 200) {
+          this.approvalList = res.message
+        } else {
+          console.log('出错啦')
+        }
+      })
+      .catch(error => {
+        console.log(error)
+      })
+  },
+  methods: {
+    // 添加审批
+    _addApprovla() {
+      api.addApprovla()
+    }
   }
 }
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus" scoped>
   @import '~common/stylus/variable'
+  .line-h
+    line-height 1.6!important
+  .bg-blue
+    background-color $color-background-blue
   .home
     color: $color-text-d
     .header

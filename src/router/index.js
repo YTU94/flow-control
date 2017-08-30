@@ -11,7 +11,15 @@ import approvalAlready from '@/components/approval/state/approvalAlready'
 import approvalOk from '@/components/approval/state/approvalOk'
 import approvalAll from '@/components/approval/state/approvalAll'
 import personnel from '@/components/personnel/personnel'
-
+import roleManage from '@/components/personnel/roleManage'
+import roleAdd from '@/components/personnel/roleAdd'
+import roleUpdate from '@/components/personnel/roleUpdate'
+import memberManage from '@/components/personnel/memberManage'
+import memberAdd from '@/components/personnel/memberAdd'
+import memberUpdate from '@/components/personnel/memberUpdate'
+import materialManage from '@/components/personnel/materialManage'
+import materialAdd from '@/components/personnel/materialAdd'
+import materialUpdate from '@/components/personnel/materialUpdate'
 Vue.use(Router)
 
 export default new Router({
@@ -31,7 +39,8 @@ export default new Router({
       children: [
         {
           path: '/',
-          component: approvalUn
+          redirect: 'approvalAll',
+          component: approvalAll
         },
         {
           path: 'approvalUn',
@@ -53,6 +62,7 @@ export default new Router({
     },
     {
       path: '/lookApproval',
+      name: 'lookApproval',
       component: lookApproval
     },
     {
@@ -60,7 +70,47 @@ export default new Router({
       component: personnel
     },
     {
+      path: '/roleManage',
+      component: roleManage
+    },
+    {
+      path: '/roleAdd',
+      name: 'roleAdd',
+      component: roleAdd
+    },
+    {
+      path: '/roleUpdate',
+      name: 'roleUpdate',
+      component: roleUpdate
+    },
+    {
+      path: '/memberAdd',
+      component: memberAdd
+    },
+    {
+      path: '/memberUpdate',
+      name: 'memberUpdate',
+      component: memberUpdate
+    },
+    {
+      path: '/memberManage',
+      component: memberManage
+    },
+    {
+      path: '/materialAdd',
+      component: materialAdd
+    },
+    {
+      path: '/materialManage',
+      component: materialManage
+    },
+    {
+      path: '/materialUpdate',
+      component: materialUpdate
+    },
+    {
       path: '/approvalDetail',
+      name: 'approvalDetail',
       component: approvalDetail
     },
     {

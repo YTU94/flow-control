@@ -1,12 +1,12 @@
 <template>
   <div class="add-flow" v-if="page === 0">
-    <m-header links='/' msg="添加流程11"></m-header>
+    <m-header links='/home' msg="添加流程"></m-header>
     <div class="main-body">
-      <p class="flow-name border-bottom">流程名: <input type="text" class="flow-name-i" placeholder="请输入流程名"></p>
+      <p class="flow-name border-bottom">流程名：<input type="text" class="flow-name-i" placeholder="请输入流程名"></p>
       <div class="flow-member">
-        <p class="member-title">添加成员<span>(点击人员删除)</span></p>
+        <p class="member-title">添加成员<span> (点击人员删除)</span></p>
         <div class="member-c">
-          <div class="member-item">项目经理</div>
+          <div @click="hide($event)" class="member-item">项目经理</div>
           <div class="member-item">经理</div>
           <div class="member-item">项目经理</div>
           <div class="member-item">项目经理</div>
@@ -37,16 +37,16 @@
         <i @click="select($event)" class="iconfont icon-yuanquan"></i>  会计
       </p>
       <p class="members-item border-bottom">
-        <i class="iconfont"></i>  会计
+        <i @click="select($event)" class="iconfont icon-yuanquan"></i>  会计
       </p>
       <p class="members-item border-bottom">
-        <i class="iconfont"></i>  会计
+        <i @click="select($event)" class="iconfont icon-yuanquan"></i>  会计
       </p>
       <p class="members-item border-bottom">
-        <i class="iconfont"></i>  会计
+        <i @click="select($event)" class="iconfont icon-yuanquan"></i>  会计
       </p>
       <p class="members-item border-bottom">
-        <i class="iconfont"></i>  会计
+        <i @click="select($event)" class="iconfont icon-yuanquan"></i>  会计
       </p>
     </div>
     <div class="btn" @click="sure">确定</div>
@@ -54,6 +54,7 @@
 </template>
 
 <script>
+// import api from 'api/api'
 import MHeader from 'components/m-header/m-header'
 export default {
   components: {
@@ -69,17 +70,28 @@ export default {
       this.page = 0
     },
     select (event) {
-      event.target.className = 'iconfont icon-xuanzhong'
+      if (event.target.className.indexOf('xuanzhong') > 0) {
+        event.target.className = 'iconfont icon-yuanquan'
+      } else {
+        event.target.className = 'iconfont icon-xuanzhong'
+      }
     },
     sure () {
       this.page = 0
+    },
+    hide (e) {
+      e.target.style.display = 'none'
     }
+    // 添加流程
+    // _addApproval()
   }
 }
 </script>
 
 <style lang="stylus" scoped>
   @import '~common/stylus/variable'
+  .icon-yuanquan, .icon-xuanzhong
+    color $color-text-a
   .add-flow, .add-member
     background $color-background
     position absolute
@@ -113,6 +125,7 @@ export default {
         text-align left
         padding 0 .4rem
         box-sizing border-box
+        font-size .32rem
         .iconfont
           vertical-align middle
     .main-body
@@ -126,6 +139,7 @@ export default {
         box-sizing border-box
         padding .4rem
         .flow-name-i
+          padding-left .2rem 
           outline none
           border none
       .flow-member
@@ -135,6 +149,8 @@ export default {
         .member-c
           display flex
           flex-wrap wrap
+          padding-bottom .1rem
+          padding-top .1rem
           .member-item
             display flex
             flex 0 1 1.2rem
@@ -144,7 +160,7 @@ export default {
             padding .1rem
             box-sizing border-box
             margin-right .11rem
-            margin-bottom .11rem 
+            margin-bottom .31rem
             background-color #ADB9BA
             color #fff
             font-size .34rem

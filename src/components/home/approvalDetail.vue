@@ -1,45 +1,52 @@
 <template>
   <div class="approval-detail">
-    <m-header links='/' msg="资金审批"></m-header> 
+    <m-header links='/home' msg="资金审批"></m-header> 
     <div class="main-body">
       <section class="content">
-        <p class="c-title">编号: 231312</p>
-        <p class="c-title">名称: 资金审批</p>
+        <p class="c-title">编号: {{pid}}</p>
+        <p class="c-title">名称: {{name}}</p>
         <p class="c-title">审批流程: </p>
         <p class="c-title-s">
-          会记-仓管员-水电工-出纳-酱油-经理-大佬
+          {{nodeArray}}
         </p>
       </section>
       <section class="select">
         <div class="form-group border-bottom">
           <label for="" class="f-label">材料：</label>
-          <i class="iconfont icon-xiangxia float-right" ref="icon" @click="showSelect()"></i>
+          <i class="iconfont icon-xiangxia float-right" ref="icon0" @click="showSelect(0)"></i>
+          <input class="f-input" v-model="materialValue" type="text">          
         </div>
-        <div class="select-content" v-show="select === 1">
-          <p class="border-bottom select-item">0000001    水泥</p>
-          <p class="border-bottom select-item">0000001    水泥</p>
+        <div class="select-content" v-show="select0 === 1">
+          <p class="border-bottom select-item" @click="selectMaterial(item.id, item.stuff_name)" v-for="item in material" :key="item.id">{{item.stuff_id}}    {{item.stuff_name}}</p>
         </div>
         <div class="form-group">
           <label for="" class="f-label">数量：</label>
-          <input type="text" placeholder="请输入" class="f-input">
+          <input class="f-input" type="text" v-model="addFlow.num" placeholder="请输入" >
         </div>
       </section>
       <section class="msg">
         <div class="msg-content border-bottom">
           <p class="msg-c-t">审批内容:</p>
-          <p class="msg-c-c">撒大家撒快点哈手机客户登记卡山东科技数据的哈萨克对话框</p>
+          <p class="msg-c-c">
+            <textarea class="f-input" v-model="addFlow.content" name="" id="" cols="30" rows="3"></textarea>
+          </p>
         </div>
-        <div class="form-group">
+        <div class="form-group border-bottom">
           <label for="" class="f-label">添加审批人：</label>
-          <i class="iconfont icon-xiangxia float-right"></i>
+          <i class="iconfont icon-xiangxia float-right" ref="icon1" @click="showSelect(1)"></i>
+          <input class="f-input" v-model="contentValue" type="text">
+        </div>
+        <div class="select-content" v-show="select1 === 1">
+          <p class="border-bottom select-item" v-for="item in approvalPeople" @click="addFlow.rname = contentValue = item.name" :key="item.id">{{item.name}}    有问题</p>
         </div>
       </section>
-      <div class="btn">执行</div>
+      <div class="btn" @click="_addApprovalFlow()">执行</div>
     </div>
   </div>
 </template>
 
 <script>
+import api from 'api/api'
 import MHeader from 'components/m-header/m-header'
 export default {
   components: {
@@ -47,13 +54,86 @@ export default {
   },
   data () {
     return {
-      select: 0
+      select0: 0,
+      select1: 0,
+      material: [],
+      approvalPeople: [],
+      materialValue: '',
+      contentValue: '',
+      addFlow: {
+        proId: '', // 流程ID int
+        dataId: '', // 材料ID int
+        num: '', // 数量 int
+        content: '', // 审批内容 string
+        rname: '' // 审批人 string
+      }
     }
   },
+  created () {
+    console.log(this.$route.params)
+    // 首页路由传过来 流程的参数
+    this.pid = this.$route.params.pid
+    this.name = this.$route.params.name
+    this.nodeArray = this.$route.params.nodeArray
+    this.start = this.$route.params.start
+    // 初始化获取材料和审批人
+    this._getMaterialList(sessionStorage.id, sessionStorage.token)
+    this._getApprovalPeople(sessionStorage.id, sessionStorage.token, this.start)
+    this.materialObj = {}
+  },
+  mounted () {
+  },
   methods: {
-    showSelect () {
-      this.select = this.select === 0 ? 1 : 0
-      this.$refs.icon.className = this.select === 0 ? 'iconfont icon-xiangxia float-right' : 'iconfont icon-xiangshang float-right'
+    showSelect(a) {
+      if (a === 0) {
+        this.select0 = this.select0 === 0 ? 1 : 0
+        this.$refs.icon0.className = this.select0 === 0 ? 'iconfont icon-xiangxia float-right' : 'iconfont icon-xiangshang float-right'
+      } else {
+        this.select1 = this.select1 === 0 ? 1 : 0
+        this.$refs.icon1.className = this.select1 === 0 ? 'iconfont icon-xiangxia float-right' : 'iconfont icon-xiangshang float-right'
+      }
+    },
+    // 选择值, 赋值
+    selectMaterial(id, val) {
+      this.addFlow.dataId = id
+      this.materialValue = val
+    },
+    // 获取材料
+    _getMaterialList(uid, token) {
+      api.getMaterialList(uid, token)
+        .then(res => {
+          if (res.code === 200) {
+            this.material = res.message
+          }
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    },
+    // 获取审批人
+    _getApprovalPeople(uid, token, name) {
+      api.getApprovalPeople(uid, token, name)
+        .then(res => {
+          if (res.code === 200) {
+            this.approvalPeople = res.message
+          }
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    },
+    // 添加一个审批流程——执行
+    _addApprovalFlow() {
+      debugger
+      api.addApprovalFlow(sessionStorage.id, sessionStorage.token, this.$route.params.id, this.addFlow.dataId, this.addFlow.num, this.addFlow.content, this.addFlow.rname)
+        .then(res => {
+          if (res.code === 200) {
+            console.log(res)
+          }
+        })
+        .catch(error => {
+          console.log(error)
+        })
     }
   }
 }
@@ -61,6 +141,10 @@ export default {
 
 <style lang="stylus" scoped>
   @import '~common/stylus/variable'
+  .rotate
+    transform-origin 50% 50%
+    transition all .3s linear 
+    transform rotateZ(180deg)
   .approval-detail
     position absolute
     width 100%
@@ -80,7 +164,7 @@ export default {
         margin-top .4rem
         .c-title-s
           color #797979
-      .select
+      .select, .msg
         float left
         background #fff
         box-sizing border-box
@@ -116,6 +200,11 @@ export default {
             line-height 2.6
           .msg-c-c
             color #797979
+            .f-input
+              border none 
+              outline none 
+              width 100%
+              color $color-text-gray
         .form-group  
           height 1.2rem
           line-height 1.2rem

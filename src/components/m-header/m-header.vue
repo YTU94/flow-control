@@ -23,7 +23,7 @@ export default {
     left 0
     width 100%
     box-sizing border-box
-    font-size 14px
+    font-size 16px
     text-align center
     padding .373333rem
     background #fff

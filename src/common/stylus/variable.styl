@@ -1,5 +1,6 @@
 // 颜色定义规范
-$color-background = #EFEFF0 
+$color-background = #EFEFF0
+$color-background-blue = #88AAB8!important
 $color-background-d = rgba(0, 0, 0, 0.3)
 $color-highlight-background = #333
 $color-dialog-background = #666
@@ -23,3 +24,8 @@ $font-size-medium-x = 16px
 $font-size-large = 18px
 $font-size-large-x = 22px
 
+// 背景图片
+bg-image($url)
+  background-image: url($url + "@2x.png")
+  @media (-webkit-min-device-pixel-ratio: 3),(min-device-pixel-ratio: 3)
+    background-image: url($url + "@2x.png")

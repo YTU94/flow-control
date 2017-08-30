@@ -13,7 +13,7 @@
         <router-link tag="span" to="/lookApproval">
           <span class="tabs-item">查&nbsp;&nbsp;&nbsp;&nbsp;看</span>          
         </router-link>
-        <span class="tabs-item">删&nbsp;&nbsp;&nbsp;&nbsp;除</span>
+        <span class="tabs-item tabs-item-d">删&nbsp;&nbsp;&nbsp;&nbsp;除</span>
       </div>
       <div class="line"></div>
     </div>
