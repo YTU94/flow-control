@@ -16,8 +16,8 @@
       <ul class="list">
         <li class="" v-on:touchstart="touchS($event)" v-for="item in memberList" :key="item.id">
           <div class="item-msg">
-            <p class="msg-one">出纳蛋蛋<span class="msg-sex">女</span></p>
-            <p class="msg-two">账号：蛋蛋</p>
+            <p class="msg-one">{{item.rname | checkNull('职位名称')}}<span class="msg-sex">{{item.sex | checkNull('性别')}}</span></p>
+            <p class="msg-two">账号：{{item.name | checkNull('姓名')}}</p>
           </div>
           <span class="item-delete" @click="_deleteMember(item.id, $event)">删除</span>          
           <router-link tag="span" :to="{name: 'memberUpdate', params: {id: item.id}}" class="item-update"></router-link>
@@ -48,8 +48,17 @@ export default {
     api.getAllPerson(sessionStorage.id, sessionStorage.token)
       .then(res => {
         if (res.code === 200) {
-          console.log(res)
-          this.memberList = res.message
+          var user = []
+          for (let i = 0; i < res.message.length; i++) {
+            user.splice(i, 0, res.message[i].user)
+          }
+          for (let i = 0; i < user.length; i++) {
+            if (user[i].length > 0) {
+              for (let a = 0; a < user[i].length; a++) {
+                this.memberList.splice(a, 0, user[i][a])
+              }
+            }
+          }
         }
       })
       .catch(error => {
@@ -58,11 +67,10 @@ export default {
   },
   methods: {
     _deleteMember(pid, e) {
-      api.deleteMember(sessionStorage.id, sessionStorage.token, pid, e)
+      api.deletePerson(sessionStorage.id, sessionStorage.token, pid, e)
         .then(res => {
           if (res.code === 200) {
-            console.log(res)
-            e.target.parentNode.style.diaplay = 'none'
+            e.target.parentNode.style.display = 'none'
           }
         })
     },
@@ -77,7 +85,6 @@ export default {
         if (expansion) { // 判断是否展开，如果展开则收起
           expansion.className = ''
         }
-        console.log(x, y, X, Y, swipeX, swipeY)
       })
       e.target.addEventListener('touchmove', function (event) {
         X = event.changedTouches[0].pageX
@@ -149,6 +156,7 @@ export default {
     .content
       float left
       width 100%
+      margin-bottom 1.2rem
       .list
         background #fff
         overflow hidden

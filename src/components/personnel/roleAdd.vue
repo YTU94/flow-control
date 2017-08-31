@@ -12,11 +12,11 @@
         <input type="text" v-model="rule" class="f-input" name="" id="" placeholder="等级" readonly>
       </div>
       <div class="select-content" v-show="select === 1">
-        <p class="border-bottom select-item" @click="rule = '一级'">一级</p>
-        <p class="border-bottom select-item" @click="rule = '二级'">二级</p>
-        <p class="border-bottom select-item" @click="rule = '三级'">三级</p>
-        <p class="border-bottom select-item" @click="rule = '四级'">四级</p>
-        <p class="border-bottom select-item" @click="rule = '五级'">五级</p>
+        <p class="border-bottom select-item" @click="rule = 1">一级</p>
+        <p class="border-bottom select-item" @click="rule = 2">二级</p>
+        <p class="border-bottom select-item" @click="rule = 3">三级</p>
+        <p class="border-bottom select-item" @click="rule = 4">四级</p>
+        <p class="border-bottom select-item" @click="rule = 5">五级</p>
       </div>
     </section>
     <!-- btn -->

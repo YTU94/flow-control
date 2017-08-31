@@ -1,31 +1,52 @@
 <template>
   <div class="material-add">
-    <m-header links="materialManage" msg="添加材料"></m-header>
+    <m-header links="/materialManage" msg="添加材料"></m-header>
     <!-- main -->
     <div class="content">
       <div class="form-group border-bottom">
-        <label for="" class="f-label">角色名：</label>
-        <input type="text" placeholder="请输入" class="f-input">
+        <label for="" class="f-label">材料编号：</label>
+        <input type="text" v-model="stuff" placeholder="请输入" class="f-input">
       </div>
       <div class="form-group border-bottom">
-        <label for="" class="f-label">角色名：</label>
-        <input type="text" placeholder="请输入" class="f-input">
+        <label for="" class="f-label">材料名称：</label>
+        <input type="text" v-model="name" placeholder="请输入" class="f-input">
       </div>
       <div class="form-group border-bottom">
-        <label for="" class="f-label">角色名：</label>
-        <input type="text" placeholder="请输入" class="f-input">
+        <label for="" class="f-label">备注：</label>
+        <input type="text" v-model="content" placeholder="请输入" class="f-input">
       </div>
     </div>
     <!-- btn -->
-    <div class="btn">确定添加</div>
+    <div class="btn" @click="_addMaterial()">确定添加</div>
   </div>
 </template>
 
 <script>
+import api from 'api/api'
 import MHeader from 'components/m-header/m-header'
 export default {
   components: {
     MHeader
+  },
+  data () {
+    return {
+      stuff: '',
+      name: '',
+      content: ''
+    }
+  },
+  methods: {
+    _addMaterial() {
+      api.addMaterial(sessionStorage.id, sessionStorage.token, this.stuff, this.name, this.content)
+        .then(res => {
+          if (res.code === 200) {
+            this.$router.push('/materialManage')
+          }
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    }
   }
 }
 </script>

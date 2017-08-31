@@ -4,28 +4,52 @@
     <!-- main -->
     <div class="content">
       <div class="form-group border-bottom">
-        <label for="" class="f-label">角色名：</label>
-        <input type="text" placeholder="请输入" class="f-input">
+        <label for="" class="f-label">材料编号：</label>
+        <input type="text" v-model="stuff" placeholder="请输入" class="f-input">
       </div>
       <div class="form-group border-bottom">
-        <label for="" class="f-label">角色名：</label>
-        <input type="text" placeholder="请输入" class="f-input">
+        <label for="" class="f-label">材料名称：</label>
+        <input type="text" v-model="name" placeholder="请输入" class="f-input">
       </div>
       <div class="form-group border-bottom">
-        <label for="" class="f-label">角色名：</label>
-        <input type="text" placeholder="请输入" class="f-input">
+        <label for="" class="f-label">备注：</label>
+        <input type="text" v-model="content" placeholder="请输入" class="f-input">
       </div>
     </div>
     <!-- btn -->
-    <div class="btn">确定修改</div>
+    <div class="btn" @click="_editMaterial()">确定修改</div>
   </div>
 </template>
 
 <script>
+import api from 'api/api'
 import MHeader from 'components/m-header/m-header'
 export default {
   components: {
     MHeader
+  },
+  data () {
+    return {
+      stuff: '',
+      name: '',
+      content: ''
+    }
+  },
+  created () {
+    console.log(this.$route.params)
+  },
+  methods: {
+    _editMaterial() {
+      api.editMaterial(sessionStorage.id, sessionStorage.token, this.$route.params.id, this.stuff, this.name, this.content)
+        .then(res => {
+          if (res.code === 200) {
+            this.$router.push('/materialManage')
+          }
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    }
   }
 }
 </script>

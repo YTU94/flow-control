@@ -62,7 +62,7 @@ export default {
     return fetch('api/web/index.php?r=api%2Fapproval', {uid: uid, token: token, content: content, rname: rname, fId: fId})
   },
   // 添加审核流程
-  addProcess (uid, token, nam, list, start) {
+  addProcess (uid, token, name, list, start) {
     return fetch('api/web/index.php?r=api%2Faddprocess', {uid: uid, token: token, name: name, list: list, start: start})
   },
   // 获取材料列表
@@ -84,6 +84,10 @@ export default {
   // 获取审批列表详情
   getApprovalInfo (uid, token, fid) {
     return fetch('api/web/index.php?r=api%2Fgetfinailinfo', {uid: uid, token: token, fid: fid})
+  },
+  // 获取审批流程详情
+  getProcessInfo (uid, token, lid) {
+    return fetch('api/web/index.php?r=api%2Fgetprocessinfo', {uid: uid, token: token, lid: lid})
   },
   // 删除审批
   deleteApproval (uid, token, rid, fid) {
@@ -111,14 +115,26 @@ export default {
   },
   // 添加人员
   addPerson(uid, token, rname, name, sex, user, pwd) {
-    return fetch('api/web/index.php?r=api%2Faddpeople', {uid: uid, token: token, rname: name, name: name, sex: sex, user: user, pwd: pwd})
+    return fetch('api/web/index.php?r=api%2Faddpeople', {uid: uid, token: token, rname: rname, name: name, sex: sex, user: user, pwd: pwd})
   },
   // 修改人员
   editPerson(uid, token, pid, rname, name, sex, user, pwd) {
-    return fetch('api/web/index.php?r=api%2Feditpeople', {uid: uid, token: token, pid: pid, rname: name, name: name, sex: sex, user: user, pwd: pwd})
+    return fetch('api/web/index.php?r=api%2Feditpeople', {uid: uid, token: token, pid: pid, rname: rname, name: name, sex: sex, user: user, pwd: pwd})
   },
   // 删除人员
   deletePerson(uid, token, pid) {
     return fetch('api/web/index.php?r=api%2Fdelpeople', {uid: uid, token: token, pid: pid})
+  },
+  // 编辑材料
+  editMaterial(uid, token, sId, stuff, name, content) {
+    return fetch('api/web/index.php?r=api%2Feditstuff', {uid: uid, token: token, s_id: sId, stuff: stuff, name: name, content: content})
+  },
+  // 添加材料
+  addMaterial(uid, token, stuff, name, content) {
+    return fetch('api/web/index.php?r=api%2Faddstuff', {uid: uid, token: token, stuff: stuff, name: name, content: content})
+  },
+  // 删除材料
+  deleteMaterial(uid, token, id) {
+    return fetch('api/web/index.php?r=api%2Fdelstuff', {uid: uid, token: token, s_id: id})
   }
 }

@@ -6,14 +6,14 @@
         <div class="form-group border-bottom">
           <label for="" class="f-label">角色名：</label>
           <i class="iconfont icon-xiangxia float-right" ref="icon" @click="showSelect()"></i>
-        </div>
+          <input type="text" v-model="rname" name="" id="" class="f-input" placeholder="角色">
+        </div>  
         <div class="select-content border-bottom" v-show="select === 1">
-          <p class="border-bottom select-item">0000001    水泥</p>
-          <p class="border-bottom select-item">0000001    水泥</p>
+          <p class="border-bottom select-item" @click="rname = item.rname" v-for="item in roleList" :key="item.id">{{item.roleID}}    {{item.rname}}</p>
         </div>
         <div class="form-group border-bottom">
           <label for="" class="f-label">姓名：</label>
-          <input type="text" placeholder="请输入" class="f-input">
+          <input type="text" v-model="name" placeholder="请输入" class="f-input">
         </div>
         <!-- 性别 -->
         <div class="form-group border-bottom">
@@ -27,20 +27,21 @@
         </div>
         <div class="form-group border-bottom">
           <label for="" class="f-label">账号：</label>
-          <input type="text" placeholder="请输入" class="f-input">
+          <input type="text" v-model="user" placeholder="请输入" class="f-input">
         </div>
         <div class="form-group border-bottom">
           <label for="" class="f-label">密码：</label>
-          <input type="text" placeholder="请输入" class="f-input">
+          <input type="text" v-model="pwd" placeholder="请输入" class="f-input">
         </div>        
       </section>
     </div>
     <!-- btn -->
-    <div class="btn">确定添加</div>
+    <div class="btn" @click="_addMember()">确定添加</div>
   </div>
 </template>
 
 <script>
+  import api from 'api/api'
   import MHeader from 'components/m-header/m-header'
   export default {
     components: {
@@ -50,13 +51,43 @@
       return {
         select: 0,
         isActive0: true,
-        isActive1: false
+        isActive1: false,
+        roleList: [],
+        rname: '',
+        name: '',
+        sex: '',
+        user: '',
+        pwd: ''
       }
+    },
+    created () {
+      api.getAllRole(sessionStorage.id, sessionStorage.token)
+        .then(res => {
+          if (res.code === 200) {
+            console.log(res)
+            this.roleList = res.message
+          }
+        })
+        .catch(error => {
+          console.log(error)
+        })
     },
     methods: {
       showSelect () {
         this.select = this.select === 0 ? 1 : 0
         this.$refs.icon.className = this.select === 0 ? 'iconfont icon-xiangxia float-right' : 'iconfont icon-xiangshang float-right'
+      },
+      _addMember () {
+        this.sex = this.isActive0 === 1 ? '男' : '女'
+        api.addPerson(sessionStorage.id, sessionStorage.token, this.rname, this.name, this.sex, this.user, this.pwd)
+          .then(res => {
+            if (res.code === 200) {
+              this.$router.push('/memberManage')
+            }
+          })
+          .catch(error => {
+            console.log(error)
+          })
       }
     }
   }

@@ -1,5 +1,6 @@
 <template>
   <div class="login">
+    <m-dialog msg="请输入完整信息" btn="确定" v-if="dialog === 1"></m-dialog>
     <section class="title">
       远航审批管理系统
     </section>
@@ -26,12 +27,17 @@
 
 <script>
 import api from './../../api/api'
+import MDialog from 'components/dialog/dialog'
 export default {
+  components: {
+    MDialog
+  },
   data () {
     return {
+      dialog: 1,
       // user
-      userName: '毛乐军',
-      password: 'mlj123456',
+      userName: '费升阳',
+      password: 'fsy123456',
       company: '35号地块'
     }
   },
@@ -66,6 +72,7 @@ export default {
     width: 100%
     height 100%
     position absolute
+    z-index 10
     .title
       position absolute
       top 3.333333rem

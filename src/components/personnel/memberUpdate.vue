@@ -32,7 +32,7 @@
       </section>
     </div>
     <!-- btn -->
-    <div class="btn">确定修改</div>
+    <div class="btn" @click="_editMember()">确定修改</div>
   </div>
 </template>
 
@@ -64,10 +64,11 @@
         this.$refs.icon.className = this.select === 0 ? 'iconfont icon-xiangxia float-right' : 'iconfont icon-xiangshang float-right'
       },
       _editMember() {
+        this.sex = this.isActive0 === 1 ? '男' : '女'
         api.editPerson(sessionStorage.id, sessionStorage.token, this.$route.params.id, this.rname, this.name, this.sex, this.user, this.pwd)
           .then(res => {
             if (res.code === 200) {
-              console.log(res)
+              this.$router.push('/memberManage')
             }
           })
           .catch(error => {

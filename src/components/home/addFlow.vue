@@ -2,26 +2,16 @@
   <div class="add-flow" v-if="page === 0">
     <m-header links='/home' msg="添加流程"></m-header>
     <div class="main-body">
-      <p class="flow-name border-bottom">流程名：<input type="text" class="flow-name-i" placeholder="请输入流程名"></p>
+      <p class="flow-name border-bottom">流程名：<input type="text" v-model="name" class="flow-name-i" placeholder="请输入流程名"></p>
       <div class="flow-member">
         <p class="member-title">添加成员<span> (点击人员删除)</span></p>
         <div class="member-c">
-          <div @click="hide($event)" class="member-item">项目经理</div>
-          <div class="member-item">经理</div>
-          <div class="member-item">项目经理</div>
-          <div class="member-item">项目经理</div>
-          <div class="member-item">项目经理</div>
-          <div class="member-item">项目经理</div>
-          <div class="member-item">项目经理</div>
-          <div class="member-item">项目经理</div>
-          <div class="member-item">项目经理</div>
-          <div class="member-item">项目经理</div>
-          <div class="member-item">项目经理</div>
+          <div @click="hide($event)" class="member-item" v-show="selectArray.length > 0" v-for="item in selectArray" :key="item.index">{{item}}</div>
           <div class="member-item" style="background: #6F9790" @click="page = 1"><i class="iconfont icon-jia"></i></div>
         </div>
       </div>
     </div>
-    <div class="btn">
+    <div class="btn" @click="_addApproval">
       生成流程
     </div>
   </div>
@@ -30,23 +20,11 @@
       <span class="h-back" @click="back">
         <i class="iconfont icon-xiangzuo"></i>返回
       </span>
-      添加人员
+      添加角色
     </div>
     <div class="members">
-      <p class="members-item border-bottom">
-        <i @click="select($event)" class="iconfont icon-yuanquan"></i>  会计
-      </p>
-      <p class="members-item border-bottom">
-        <i @click="select($event)" class="iconfont icon-yuanquan"></i>  会计
-      </p>
-      <p class="members-item border-bottom">
-        <i @click="select($event)" class="iconfont icon-yuanquan"></i>  会计
-      </p>
-      <p class="members-item border-bottom">
-        <i @click="select($event)" class="iconfont icon-yuanquan"></i>  会计
-      </p>
-      <p class="members-item border-bottom">
-        <i @click="select($event)" class="iconfont icon-yuanquan"></i>  会计
+      <p class="members-item border-bottom" v-for="item in roleList" :key="item.index">
+        <i @click="select($event)" class="iconfont icon-yuanquan"></i>  {{item.rname}}
       </p>
     </div>
     <div class="btn" @click="sure">确定</div>
@@ -54,7 +32,7 @@
 </template>
 
 <script>
-// import api from 'api/api'
+import api from 'api/api'
 import MHeader from 'components/m-header/m-header'
 export default {
   components: {
@@ -62,8 +40,22 @@ export default {
   },
   data () {
     return {
-      page: 0
+      page: 0,
+      roleList: [],
+      selectArray: [],
+      // 添加流程数据
+      name: '',
+      list: '',
+      start: ''
     }
+  },
+  created () {
+    api.getAllRole(sessionStorage.id, sessionStorage.token)
+      .then(res => {
+        if (res.code === 200) {
+          this.roleList = res.message
+        }
+      })
   },
   methods: {
     back () {
@@ -76,14 +68,35 @@ export default {
         event.target.className = 'iconfont icon-xuanzhong'
       }
     },
-    sure () {
+    sure () { // 把选择的传递到前面
       this.page = 0
+      var nodes = document.querySelectorAll('.members p')
+      for (let i = 0; i < nodes.length; i++) {
+        if (nodes[i].childNodes[0].className.indexOf('xuanzhong') > 0) {
+          this.selectArray.splice(i, 0, nodes[i].childNodes[1].data.trim())
+        }
+      }
     },
     hide (e) {
       e.target.style.display = 'none'
-    }
+      debugger
+      this.$arrayRemoveByValue(this.selectArray, e.target.innerHTML.trim())
+      console.log(this.selectArray)
+    },
     // 添加流程
-    // _addApproval()
+    _addApproval() {
+      this.list = this.selectArray.join('-')
+      this.start = this.selectArray[0]
+      api.addProcess(sessionStorage.id, sessionStorage.token, this.name, this.list, this.start)
+        .then(res => {
+          if (res.code === 200) {
+            console.log(res)
+          }
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    }
   }
 }
 </script>

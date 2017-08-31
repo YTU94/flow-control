@@ -1,17 +1,19 @@
 <template>
   <div class="lookApproval">
     <m-header links='/approval' msg="资金审批"></m-header>
+    <m-dialog v-if="dialog === 1" msg="输入信息不完整" btn="确定"></m-dialog>
     <div class="main-body">
       <!-- main body -->
       <div class="flow">
-        <p class="f-content">编号：454455</p>
-        <p class="f-content">名称：资金审批</p>
-        <p class="f-content-s">会计-会计-会计-会计-会计-会计-会计-会计-会计-会计-会计-会计-会计-</p>        
+        <p class="f-content">编号：{{approval.num}}</p>
+        <p class="f-content">名称：{{approval.name}}</p>
+        <p class="f-content">审批流程：</p>
+        <p class="f-content-s">{{approval.content}}</p>        
         <p class="f-content">材料：</p>
         <p class="f-content-s">004-水泥 （带） -5000</p>
       </div>
       <div class="flow">
-        <p class="f-content">发起人：小王</p>
+        <p class="f-content">发起人：{{approval.suber}}</p>
         <p class="f-content">审批内容：</p>
         <p class="f-content-s">改消费属于垃圾消费，渣渣的是多少卡的空间撒谎的课件撒是的辉煌科技时代监控和撒的结合</p>        
         <p class="f-content">提出人：出纳丽丽</p>
@@ -19,8 +21,8 @@
         <p class="f-content-s">没问题</p>
       </div>
       <div class="flow">
-        <p class="f-content">审批人：流程发起人张总</p>
-        <p class="f-content">生僻意见：</p>
+        <p class="f-content">审批人：{{approval.reApproval}}</p>
+        <p class="f-content">审批意见：</p>
         <p class="f-content-s">没问题</p>
       </div>
       <!-- 审核状态 -->
@@ -57,21 +59,32 @@
 <script>
 import api from 'api/api'
 import MHeader from 'components/m-header/m-header'
+import MDialog from 'components/dialog/dialog'
 export default {
   components: {
-    MHeader
+    MHeader,
+    MDialog
   },
   data () {
     return {
+      dialog: 0,
       select: 0,
       isActive0: false,
       isActive1: false,
-      isActive2: false
+      isActive2: false,
+      approval: {
+        num: '', // 流程编号
+        name: '', // 流程名称
+        content: '', // 流程内容
+        suber: '', // 发起人
+        reApproval: '' // 审批人
+      }
     }
   },
   created () {
     console.log(this.$route.params)
-    this._getApprovalInfo(sessionStorage.id, sessionStorage.token, this.$route.params.fid)
+    this._getApprovalInfo(this.$route.params.fid)
+    this._getProcessInfo(this.$route.params.lid)
   },
   methods: {
     showSelect() {
@@ -79,11 +92,26 @@ export default {
       this.$refs.icon.className = this.select === 0 ? 'iconfont icon-xiangxia float-right' : 'iconfont icon-xiangshang float-right'
     },
     // 获取审批详情
-    _getApprovalInfo(uid, token, fid) {
-      api.getApprovalInfo(uid, token, fid)
+    _getApprovalInfo(fid) {
+      api.getApprovalInfo(sessionStorage.id, sessionStorage.token, fid)
         .then(res => {
           if (res.code === 200) {
-            console.log(res)
+            this.approval.reApproval = res.message.rname
+            console.log(this.approval)
+          }
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    },
+    _getProcessInfo(lid) {
+      api.getProcessInfo(sessionStorage.id, sessionStorage.token, lid)
+        .then(res => {
+          if (res.code === 200) {
+            this.approval.num = res.message.pid
+            this.approval.name = res.message.pname
+            this.approval.content = res.message.nodeArray
+            this.approval.suber = res.message.start
           }
         })
         .catch(error => {

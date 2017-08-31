@@ -10,7 +10,7 @@
         <p class="flow">{{item.content}}</p>
       </div>
       <div class="tabs">
-        <router-link tag="span" :to="{name: 'lookApproval', params: {fid: item.id}}">
+        <router-link tag="span" :to="{name: 'lookApproval', params: {fid: item.id, lid: item.lid}}">
           <span class="tabs-item">查&nbsp;&nbsp;&nbsp;&nbsp;看</span>          
         </router-link>
         <span class="tabs-item tabs-item-d">删&nbsp;&nbsp;&nbsp;&nbsp;除</span>

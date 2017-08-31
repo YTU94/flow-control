@@ -14,32 +14,25 @@
     <h3 class="title">会计</h3>
     <div class="content">
       <ul class="list">
-        <li class="">
+        <li class="" v-on:touchstart="touchS($event)" v-for="item in materialList" :key="item.id">
           <div class="item-msg">
-            <p class="msg-one">1464454<span class="msg-sex">螺母X</span></p>
-            <p class="msg-two">备注：价格200</p>
+            <p class="msg-one">{{item.stuff_id}} | {{item.id}}<span class="msg-sex">{{item.stuff_name}}</span></p>
+            <p class="msg-two">备注：{{item.content}}</p>
           </div>
-          <span class="item-delete">删除</span>          
-          <router-link tag="span" to="MaterialUpdate" class="item-update"></router-link>
-        </li>
-        <li class="">
-          <div class="item-msg">
-            <span class="msg-one">213123<span class="msg-sex">水泥</span></span>
-            <span class="msg-two">账号：订单</span>
-          </div>
-          <span class="item-delete">删除</span>          
-          <router-link tag="span" to="MaterialUpdate" class="item-update"></router-link>
-        </li>        
+          <span class="item-delete" @click="_deleteMaterial(item.id, $event)">删除</span>          
+          <router-link tag="span" :to="{name: 'materialUpdate', params: {id: item.id}}" class="item-update"></router-link>
+        </li>       
       </ul>
     </div>
     <!-- foot btn -->
     <router-link tag="div" to="/materialAdd" class="btn">
-      <i class="iconfont icon-jia"></i> 添加人员
+      <i class="iconfont icon-jia"></i> 添加材料
     </router-link>
   </div>
 </template>
 
 <script>
+import api from 'api/api'
 import MHeader from 'components/m-header/m-header'
 export default {
   components: {
@@ -47,8 +40,21 @@ export default {
   },
   data () {
     return {
-      search: 0 // 顶部搜索栏
+      search: 0, // 顶部搜索栏
+      materialList: []
     }
+  },
+  created () {
+    api.getMaterialList(sessionStorage.id, sessionStorage.token)
+      .then(res => {
+        if (res.code === 200) {
+          console.log(res)
+          this.materialList = res.message
+        }
+      })
+      .catch(error => {
+        console.log(error)
+      })
   },
   mounted () {
     var expansion = null
@@ -65,6 +71,56 @@ export default {
         }
       })
       container[i].addEventListener('touchmove', function (event) {
+        X = event.changedTouches[0].pageX
+        Y = event.changedTouches[0].pageY
+        // 左右滑动
+        if (swipeX && Math.abs(X - x) - Math.abs(Y - y) > 0) {
+          // 阻止事件冒泡
+          event.stopPropagation()
+          if (X - x > 10) { // 右滑
+            event.preventDefault()
+            this.className = '' // 右滑收起
+          }
+          if (x - X > 10) { // 左滑
+            event.preventDefault()
+            this.className = 'swipeleft' // 左滑展开
+            expansion = this
+          }
+          swipeY = false
+        }
+        // 上下滑动
+        if (swipeY && Math.abs(X - x) - Math.abs(Y - y) < 0) {
+          swipeX = false
+        }
+      })
+    }
+  },
+  methods: {
+    _deleteMaterial(id, e) {
+      api.deleteMaterial(sessionStorage.id, sessionStorage.token, id)
+        .then(res => {
+          if (res.code === 200) {
+            console.log(res)
+            e.target.parentNode.style.display = 'none'
+          }
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    },
+    touchS (e) {
+      var expansion = null
+      var x, y, X, Y, swipeX, swipeY
+      e.target.addEventListener('touchstart', function (event) {
+        x = event.changedTouches[0].pageX
+        y = event.changedTouches[0].pageY
+        swipeX = true
+        swipeY = true
+        if (expansion) { // 判断是否展开，如果展开则收起
+          expansion.className = ''
+        }
+      })
+      e.target.addEventListener('touchmove', function (event) {
         X = event.changedTouches[0].pageX
         Y = event.changedTouches[0].pageY
         // 左右滑动
@@ -134,6 +190,7 @@ export default {
     .content
       float left
       width 100%
+      margin-bottom 1.2rem
       .list
         background #fff
         overflow hidden

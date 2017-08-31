@@ -106,6 +106,7 @@ export default new Router({
     },
     {
       path: '/materialUpdate',
+      name: 'materialUpdate',
       component: materialUpdate
     },
     {
