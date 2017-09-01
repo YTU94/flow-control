@@ -6,10 +6,10 @@
         <div class="form-group border-bottom">
           <label for="" class="f-label">角色名：</label>
           <i class="iconfont icon-xiangxia float-right" ref="icon" @click="showSelect()"></i>
-          <input type="text" v-model="rname" name="" id="" class="f-input" placeholder="角色">
+          <input type="text" v-model="rname" name="" id="" class="f-input" placeholder="角色" readonly>
         </div>  
         <div class="select-content border-bottom" v-show="select === 1">
-          <p class="border-bottom select-item" @click="rname = item.rname" v-for="item in roleList" :key="item.id">{{item.roleID}}    {{item.rname}}</p>
+          <p class="border-bottom select-item" @click="rname = item.rname, select = 0" v-for="item in roleList" :key="item.id">{{item.roleID}}    {{item.rname}}</p>
         </div>
         <div class="form-group border-bottom">
           <label for="" class="f-label">姓名：</label>
@@ -36,7 +36,7 @@
       </section>
     </div>
     <!-- btn -->
-    <div class="btn" @click="_addMember()">确定添加</div>
+    <button class="btn" @click="_addMember()" :class="{disabledStyle: checkValue}" :disabled="checkValue">确定添加</button>
   </div>
 </template>
 
@@ -58,6 +58,15 @@
         sex: '',
         user: '',
         pwd: ''
+      }
+    },
+    computed: {
+      checkValue: function () {
+        if (!this.rname || !this.name || !this.user || !this.pwd) {
+          return true
+        } else {
+          return false
+        }
       }
     },
     created () {
@@ -149,5 +158,6 @@
       height 1.2rem
       line-height 1.2rem
       text-align center
-      border-radius .133333rem                  
+      border-radius .133333rem
+      border none                 
 </style>

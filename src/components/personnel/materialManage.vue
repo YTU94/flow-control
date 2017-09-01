@@ -7,8 +7,8 @@
     </div>
     <div class="header h-background" v-else>
       <i class="iconfont icon-sousuo s-icon"></i>
-      <input type="text" class="s-input" placeholder="请输入">
-      <span class="s-cancel" @click="search = 0">取消</span>
+      <input type="text" class="s-input" placeholder="请输入"  ref='search' v-on:input='searchV()'>
+      <span class="s-cancel" @click="search = 0" >取消</span>
     </div>
     <!-- main body -->
     <h3 class="title">会计</h3>
@@ -41,7 +41,8 @@ export default {
   data () {
     return {
       search: 0, // 顶部搜索栏
-      materialList: []
+      materialList: [],
+      materialListNew: []
     }
   },
   created () {
@@ -50,6 +51,7 @@ export default {
         if (res.code === 200) {
           console.log(res)
           this.materialList = res.message
+          this.materialListNew = this.materialList
         }
       })
       .catch(error => {
@@ -107,6 +109,19 @@ export default {
         .catch(error => {
           console.log(error)
         })
+    },
+    // 搜索
+    searchV() {
+      var v = this.$refs.search.value
+      var list = this.materialListNew
+      this.materialList = []
+      for (let i = 0; i < list.length; i++) {
+        if (list[i].content.indexOf(v) >= 0 || list[i].stuff_name.indexOf(v) >= 0) {
+          this.materialList.splice(i, 0, list[i])
+        } else {
+          return false
+        }
+      }
     },
     touchS (e) {
       var expansion = null

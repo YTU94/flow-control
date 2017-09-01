@@ -1,42 +1,21 @@
 <template>
   <div class="approvalItem">
-    <div class="group">
-      <p class="title">
-        编号：4651564
-        <span class="state">等待审批</span>
-      </p>
-      <div class="content">
-        <p class="name">资金审批</p>
-        <p class="flow">会计-会计-会计-会计-会计-会计-会计-会计-会计会计-会计-会计-会计-会计-</p>
-      </div>
-      <div class="tabs">
-        <router-link tag="span" to="/lookApproval">
-          <span class="tabs-item">查&nbsp;&nbsp;&nbsp;&nbsp;看</span>          
-        </router-link>
-        <span class="tabs-item tabs-item-d">删&nbsp;&nbsp;&nbsp;&nbsp;除</span>
-      </div>
-      <div class="line"></div>
-    </div>
-    <div class="group">
-      <p class="title">
-        编号：4651564
-        <span class="state">等待审批</span>
-      </p>
-      <div class="content">
-        <p class="name">资金审批</p>
-        <p class="flow">会计-会计-会计-会计-会计-会计-会计-会计-会计会计-会计-会计-会计-会计-</p>
-      </div>
-      <div class="tabs">
-        <span class="tabs-item">删&nbsp;&nbsp;&nbsp;&nbsp;除</span>
-        <span class="tabs-item">删&nbsp;&nbsp;&nbsp;&nbsp;除</span>
-      </div>
-      <div class="line"></div>      
-    </div>    
+    <approval-ok></approval-ok>
+    <approval-already></approval-already>
+    <approval-un></approval-un>
   </div>
 </template>
 
 <script>
+import approvalOk from 'components/approval/state/approvalOk'
+import approvalAlready from 'components/approval/state/approvalAlready'
+import approvalUn from 'components/approval/state/approvalUn'
 export default {
+  components: {
+    approvalOk,
+    approvalAlready,
+    approvalUn
+  }
 }
 </script>
 <style lang="stylus" scoped>

@@ -4,7 +4,7 @@
     <div class="header">
       <p class="header-t">我的</p>
       <div class="header-logo"></div>
-      <p class="header-name">远航科技有限公司</p>
+      <p class="header-name">{{firm}}</p>
     </div>
     <!-- main body -->
     <div class="content">
@@ -47,6 +47,7 @@
 </template>
 
 <script>
+import api from 'api/api'
 import MFooter from 'components/m-footer/m-footer'
 export default {
   components: {
@@ -54,8 +55,20 @@ export default {
   },
   data () {
     return {
-      model: 0
+      model: 0,
+      firm: ''
     }
+  },
+  created () {
+    api.getUserInfo(sessionStorage.id, sessionStorage.token)
+      .then(res => {
+        if (res.code === 200) {
+          this.firm = res.message.firmID
+        }
+      })
+      .catch(error => {
+        console.log(error)
+      })
   },
   methods: {
     layout () {

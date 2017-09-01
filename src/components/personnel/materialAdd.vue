@@ -17,7 +17,7 @@
       </div>
     </div>
     <!-- btn -->
-    <div class="btn" @click="_addMaterial()">确定添加</div>
+    <button class="btn" @click="_addMaterial()" :class="{disabledStyle: checkValue}" :disabled="checkValue">确定添加</button>
   </div>
 </template>
 
@@ -33,6 +33,15 @@ export default {
       stuff: '',
       name: '',
       content: ''
+    }
+  },
+  computed: {
+    checkValue: function () {
+      if (!this.stuff || !this.name || !this.content) {
+        return true
+      } else {
+        return false
+      }
     }
   },
   methods: {
@@ -88,5 +97,6 @@ export default {
     height 1.2rem
     line-height 1.2rem
     text-align center
-    border-radius .133333rem           
+    border-radius .133333rem
+    border none            
 </style>

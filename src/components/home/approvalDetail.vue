@@ -40,7 +40,7 @@
           <p class="border-bottom select-item" v-for="item in approvalPeople" @click="addFlow.rname = contentValue = item.name" :key="item.id">{{item.name}}    有问题</p>
         </div>
       </section>
-      <div class="btn" @click="_addApprovalFlow()">执行</div>
+      <button class="btn" @click="add()" :class="{disabledStyle: checkValue}" :disabled="checkValue">执行</button>
     </div>
   </div>
 </template>
@@ -66,6 +66,15 @@ export default {
         num: '', // 数量 int
         content: '', // 审批内容 string
         rname: '' // 审批人 string
+      }
+    }
+  },
+  computed: {
+    checkValue: function () {
+      if (!this.materialValue || !this.addFlow.num || !this.addFlow.content || !this.contentValue) {
+        return true
+      } else {
+        return false
       }
     }
   },
@@ -124,7 +133,6 @@ export default {
     },
     // 添加一个审批流程——执行
     _addApprovalFlow() {
-      debugger
       api.addApprovalFlow(sessionStorage.id, sessionStorage.token, this.$route.params.id, this.addFlow.dataId, this.addFlow.num, this.addFlow.content, this.addFlow.rname)
         .then(res => {
           if (res.code === 200) {

@@ -20,7 +20,7 @@
       </div>
     </section>
     <section class="login-btn">
-      <div @click="login()" class="btn">登&nbsp;&nbsp;&nbsp;&nbsp;录</div>
+      <button @click="login()" class="btn" :class="{disabledStyle: checkValue}" :disabled="checkValue">登&nbsp;&nbsp;&nbsp;&nbsp;录</button>
     </section>
   </div>
 </template>
@@ -34,11 +34,20 @@ export default {
   },
   data () {
     return {
-      dialog: 1,
+      dialog: 0,
       // user
       userName: '费升阳',
       password: 'fsy123456',
       company: '35号地块'
+    }
+  },
+  computed: {
+    checkValue: function () {
+      if (!this.userName || !this.password || !this.company) {
+        return true
+      } else {
+        return false
+      }
     }
   },
   methods: {
@@ -111,4 +120,6 @@ export default {
         color $color-text
         border-radius .6rem
         font-size .45rem
+        border none 
+        outline none 
 </style>

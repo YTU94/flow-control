@@ -23,7 +23,9 @@
       <div class="flow">
         <p class="f-content">审批人：{{approval.reApproval}}</p>
         <p class="f-content">审批意见：</p>
-        <p class="f-content-s">没问题</p>
+        <p class="f-content-s">
+          <input type="text" class="f-content-i" v-model="content" placeholder="请输入审批内容">
+        </p>
       </div>
       <!-- 审核状态 -->
       <div class="state">
@@ -41,18 +43,16 @@
       <!-- 添加审批人 -->
       <div class="select">
         <div class="form-group border-bottom">
-          <label for="" class="f-label">材料：</label>
+          <label for="" class="f-label">审批人：</label>
           <i class="iconfont icon-xiangxia float-right" ref="icon" @click="showSelect()"></i>
+          <input type="text" class="f-input" v-model="nextReApproval">
         </div>
         <div class="select-content" v-show="select === 1">
-          <p class="border-bottom select-item">0000001    水泥</p>
-          <p class="border-bottom select-item">0000001    水泥</p>
+          <p class="border-bottom select-item" @click="nextReApproval = item.name" v-for="item in memberList" :key="item.index">{{item.rname | checkNull('职位名称')}} | {{item.name | checkNull('姓名')}}</p>
         </div>
       </div>
     </div>
-    <div class="btn">
-      <router-link tag="div" to="/approval">审批</router-link>  
-    </div> 
+    <button class="btn" @click="_moneyApproval" :class="{disabledStyle: checkValue}" :disabled="checkValue">审批</button>  
   </div>
 </template>
 
@@ -69,9 +69,14 @@ export default {
     return {
       dialog: 0,
       select: 0,
-      isActive0: false,
-      isActive1: false,
-      isActive2: false,
+      isActive0: 1,
+      isActive1: 0,
+      isActive2: 0,
+      memberList: [],
+      fId: '', // 审批id
+      nextReApproval: '', // 下级审批人
+      content: '', // 当前审批内容,
+      state: '', // 审批状态
       approval: {
         num: '', // 流程编号
         name: '', // 流程名称
@@ -81,10 +86,20 @@ export default {
       }
     }
   },
+  computed: {
+    checkValue: function () {
+      if (!this.nextReApproval || !this.content) {
+        return true
+      } else {
+        return false
+      }
+    }
+  },
   created () {
     console.log(this.$route.params)
     this._getApprovalInfo(this.$route.params.fid)
-    this._getProcessInfo(this.$route.params.lid)
+    // this._getProcessInfo(this.$route.params.lid)
+    this._getAllPerson()
   },
   methods: {
     showSelect() {
@@ -97,7 +112,48 @@ export default {
         .then(res => {
           if (res.code === 200) {
             this.approval.reApproval = res.message.rname
+            this.approval.num = res.message.process[0].pid
+            this.approval.name = res.message.process[0].pname
+            this.approval.content = res.message.process[0].nodeArray
+            this.approval.suber = res.message.process[0].start
+            this.fId = res.message.id
             console.log(this.approval)
+          }
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    },
+    // 获取所有人员
+    _getAllPerson() {
+      api.getAllPerson(sessionStorage.id, sessionStorage.token)
+        .then(res => {
+          if (res.code === 200) {
+            var user = []
+            for (let i = 0; i < res.message.length; i++) {
+              user.splice(i, 0, res.message[i].user)
+            }
+            for (let i = 0; i < user.length; i++) {
+              if (user[i].length > 0) {
+                for (let a = 0; a < user[i].length; a++) {
+                  this.memberList.splice(a, 0, user[i][a])
+                }
+              }
+            }
+          }
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    },
+    // 审批 （资金审批审批）
+    _moneyApproval() {
+      // 审批状态
+      this.state = Math.max(this.isActive0, this.isActive1, this.isActive2)
+      api.moneyApproval(sessionStorage.id, sessionStorage.token, this.content, this.nextReApproval, this.fId, this.state)
+        .then(res => {
+          if (res.code === 200) {
+            console.log(res)
           }
         })
         .catch(error => {
@@ -149,6 +205,9 @@ export default {
           line-height 1.6
           color $color-text-gray
           font-size $font-size-small
+          .f-content-i
+            width 100%
+            border none
       .state
         width 100%
         float left
@@ -179,6 +238,14 @@ export default {
           height 1.2rem
           line-height 1.2rem
           padding 0 .4rem
+          .f-input
+            float right 
+            border none
+            outline none 
+            text-align right
+            height 1.2rem 
+            line-height 1.2rem
+            padding-right .2rem
         .select-content
           background #E9F0EF
           padding .2rem .4rem
@@ -187,7 +254,7 @@ export default {
             padding .2rem 0
     .btn
       float left
-      margin-top .6rem
+      margin-top .7rem
       margin-left .4rem
       margin-bottom 1rem
       background $color-btn
@@ -197,5 +264,6 @@ export default {
       height 1.2rem
       line-height 1.2rem
       text-align center
-      border-radius .133333rem                     
+      border-radius .133333rem 
+      border none                       
 </style>

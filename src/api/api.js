@@ -4,7 +4,7 @@ import qs from 'qs'
 // axios 配置
 axios.defaults.timeout = 5000
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8'
-axios.defaults.baseURL = ''
+axios.defaults.baseURL = '/api'
 
 // POST传参序列化
 axios.interceptors.request.use((config) => {
@@ -47,94 +47,97 @@ export function fetch (url, parmas) {
 
 export default {
   login (name, pwd, firm) { // 登陆
-    return fetch('api/web/index.php?r=api%2Flogin', {name: name, pwd: pwd, firm: firm})
+    return fetch('/web/index.php?r=api%2Flogin', {name: name, pwd: pwd, firm: firm})
+  },
+  getUserInfo (uid, token) {
+    return fetch('/web/index.php?r=api%2Fgetone', {uid: uid, token: token})
   },
   // 获取审批流程
   getApproval (uid, token) {
-    return fetch('api/web/index.php?r=api%2Fgetprocess', {uid: uid, token: token})
+    return fetch('/web/index.php?r=api%2Fgetprocess', {uid: uid, token: token})
   },
   // 添加审批
   addApprovalFlow (uid, token, proId, dataId, num, content, rname) {
-    return fetch('api/web/index.php?r=api%2Faddapproval', {uid: uid, token: token, pro_id: proId, data_id: dataId, num: num, content: content, rname: rname})
+    return fetch('/web/index.php?r=api%2Faddapproval', {uid: uid, token: token, pro_id: proId, data_id: dataId, num: num, content: content, rname: rname})
   },
   // 资金审批
-  moneyApproval (uid, token, content, rname, fId) {
-    return fetch('api/web/index.php?r=api%2Fapproval', {uid: uid, token: token, content: content, rname: rname, fId: fId})
+  moneyApproval (uid, token, content, rname, fId, state) {
+    return fetch('/web/index.php?r=api%2Fapproval', {uid: uid, token: token, content: content, rname: rname, f_id: fId, state: state})
   },
   // 添加审核流程
   addProcess (uid, token, name, list, start) {
-    return fetch('api/web/index.php?r=api%2Faddprocess', {uid: uid, token: token, name: name, list: list, start: start})
+    return fetch('/web/index.php?r=api%2Faddprocess', {uid: uid, token: token, name: name, list: list, start: start})
   },
   // 获取材料列表
   getMaterialList (uid, token) {
-    return fetch('api/web/index.php?r=api%2Fgetscience', {uid: uid, token: token})
+    return fetch('/web/index.php?r=api%2Fgetscience', {uid: uid, token: token})
   },
   // 获取审批人
   getApprovalPeople (uid, token, name) {
-    return fetch('api/web/index.php?r=api%2Fapprovalpeople', {uid: uid, token: token, name: name})
+    return fetch('/web/index.php?r=api%2Fapprovalpeople', {uid: uid, token: token, name: name})
   },
   // 获取职位列表
   getRoleList (uid, token) {
-    return fetch('api/web/index.php?r=api%2Fgetrole', {uid: uid, token: token})
+    return fetch('/web/index.php?r=api%2Fgetrole', {uid: uid, token: token})
   },
   // 获取审批列表
   getApprovalList (uid, token, type) {
-    return fetch('api/web/index.php?r=api%2Fgetfinail', {uid: uid, token: token, type: type})
+    return fetch('/web/index.php?r=api%2Fgetfinail', {uid: uid, token: token, type: type})
   },
   // 获取审批列表详情
   getApprovalInfo (uid, token, fid) {
-    return fetch('api/web/index.php?r=api%2Fgetfinailinfo', {uid: uid, token: token, fid: fid})
+    return fetch('/web/index.php?r=api%2Fgetfinailinfo', {uid: uid, token: token, fid: fid})
   },
   // 获取审批流程详情
   getProcessInfo (uid, token, lid) {
-    return fetch('api/web/index.php?r=api%2Fgetprocessinfo', {uid: uid, token: token, lid: lid})
+    return fetch('/web/index.php?r=api%2Fgetprocessinfo', {uid: uid, token: token, lid: lid})
   },
   // 删除审批
   deleteApproval (uid, token, rid, fid) {
-    return fetch('api/web/index.php?r=api%2Fdelfinail', {uid: uid, token: token, rid: rid, fid: fid})
+    return fetch('/web/index.php?r=api%2Fdelfinail', {uid: uid, token: token, rid: rid, fid: fid})
   },
   // 获取所有角色
   getAllRole(uid, token) {
-    return fetch('api/web/index.php?r=api%2Fgetrole', {uid: uid, token: token})
+    return fetch('/web/index.php?r=api%2Fgetrole', {uid: uid, token: token})
   },
   // 添加角色
   addRole(uid, token, rname, rule) {
-    return fetch('api/web/index.php?r=api%2Faddrole', {uid: uid, token: token, rname: rname, rule: rule})
+    return fetch('/web/index.php?r=api%2Faddrole', {uid: uid, token: token, rname: rname, rule: rule})
   },
   // 编辑角色
   editRole(uid, token, rid, rname, rule) {
-    return fetch('api/web/index.php?r=api%2Feditrole', {uid: uid, token: token, rid: rid, rname: rname, rule: rule})
+    return fetch('/web/index.php?r=api%2Feditrole', {uid: uid, token: token, rid: rid, rname: rname, rule: rule})
   },
   // 删除角色
   deleteRole(uid, token, rid) {
-    return fetch('api/web/index.php?r=api%2Fdelrole', {uid: uid, token: token, rid: rid})
+    return fetch('/web/index.php?r=api%2Fdelrole', {uid: uid, token: token, rid: rid})
   },
   // 获取所有人员
   getAllPerson(uid, token) {
-    return fetch('api/web/index.php?r=api%2Fgetall', {uid: uid, token: token})
+    return fetch('/web/index.php?r=api%2Fgetall', {uid: uid, token: token})
   },
   // 添加人员
   addPerson(uid, token, rname, name, sex, user, pwd) {
-    return fetch('api/web/index.php?r=api%2Faddpeople', {uid: uid, token: token, rname: rname, name: name, sex: sex, user: user, pwd: pwd})
+    return fetch('/web/index.php?r=api%2Faddpeople', {uid: uid, token: token, rname: rname, name: name, sex: sex, user: user, pwd: pwd})
   },
   // 修改人员
   editPerson(uid, token, pid, rname, name, sex, user, pwd) {
-    return fetch('api/web/index.php?r=api%2Feditpeople', {uid: uid, token: token, pid: pid, rname: rname, name: name, sex: sex, user: user, pwd: pwd})
+    return fetch('/web/index.php?r=api%2Feditpeople', {uid: uid, token: token, pid: pid, rname: rname, name: name, sex: sex, user: user, pwd: pwd})
   },
   // 删除人员
   deletePerson(uid, token, pid) {
-    return fetch('api/web/index.php?r=api%2Fdelpeople', {uid: uid, token: token, pid: pid})
+    return fetch('/web/index.php?r=api%2Fdelpeople', {uid: uid, token: token, pid: pid})
   },
   // 编辑材料
   editMaterial(uid, token, sId, stuff, name, content) {
-    return fetch('api/web/index.php?r=api%2Feditstuff', {uid: uid, token: token, s_id: sId, stuff: stuff, name: name, content: content})
+    return fetch('/web/index.php?r=api%2Feditstuff', {uid: uid, token: token, s_id: sId, stuff: stuff, name: name, content: content})
   },
   // 添加材料
   addMaterial(uid, token, stuff, name, content) {
-    return fetch('api/web/index.php?r=api%2Faddstuff', {uid: uid, token: token, stuff: stuff, name: name, content: content})
+    return fetch('/web/index.php?r=api%2Faddstuff', {uid: uid, token: token, stuff: stuff, name: name, content: content})
   },
   // 删除材料
   deleteMaterial(uid, token, id) {
-    return fetch('api/web/index.php?r=api%2Fdelstuff', {uid: uid, token: token, s_id: id})
+    return fetch('/web/index.php?r=api%2Fdelstuff', {uid: uid, token: token, s_id: id})
   }
 }

@@ -12,15 +12,15 @@
         <input type="text" v-model="rule" class="f-input" name="" id="" placeholder="等级" readonly>        
       </div>
       <div class="select-content" v-show="select === 1">
-        <p class="border-bottom select-item" @click="rule = '一级'">一级</p>
-        <p class="border-bottom select-item" @click="rule = '二级'">二级</p>
-        <p class="border-bottom select-item" @click="rule = '三级'">三级</p>
-        <p class="border-bottom select-item" @click="rule = '四级'">四级</p>
-        <p class="border-bottom select-item" @click="rule = '五级'">五级</p>
+        <p class="border-bottom select-item" @click="rule = 1, select = 0">一级</p>
+        <p class="border-bottom select-item" @click="rule = 2, select = 0">二级</p>
+        <p class="border-bottom select-item" @click="rule = 3, select = 0">三级</p>
+        <p class="border-bottom select-item" @click="rule = 4, select = 0">四级</p>
+        <p class="border-bottom select-item" @click="rule = 5, select = 0">五级</p>
       </div>
     </section>
     <!-- btn -->
-    <div class="btn" @click="edit()">确定修改</div>
+    <button class="btn" @click="edit()" :class="{disabledStyle: checkValue}" :disabled = 'checkValue'>确定修改</button>
   </div>
 </template>
 
@@ -36,6 +36,15 @@ export default {
       select: 0,
       rname: '',
       rule: ''
+    }
+  },
+  computed: {
+    checkValue: function () {
+      if (!this.rname || !this.rule) {
+        return true
+      } else {
+        return false
+      }
     }
   },
   created () {
@@ -88,6 +97,7 @@ export default {
           border none
           height 1.2rem
           line-height 1.2rem
+          padding-right .2rem
       .select-content
         background #E9F0EF
         padding .2rem .4rem
@@ -106,5 +116,6 @@ export default {
     height 1.2rem
     line-height 1.2rem
     text-align center
-    border-radius .133333rem            
+    border-radius .133333rem 
+    border none           
 </style>

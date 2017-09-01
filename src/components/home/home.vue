@@ -4,16 +4,11 @@
       远航科技有限公司
     </div>
     <div class="main-body">
-      <router-link tag="div"  class="task" :to="{name: 'approvalDetail', params: {name: item.pname, id: item.id, nodeArray: item.nodeArray, start: item.start}}" v-for="item in approvalList" :key="item.id">
+      <router-link tag="div"  class="task" v-bind:class="{ bgBlue: parseInt(index) % 2 === 1 }" :to="{name: 'approvalDetail', params: {name: item.pname, id: item.id, nodeArray: item.nodeArray, start: item.start}}" v-for="(item, index) in approvalList" :key="item.index">
         <p class="line-h">名称: {{item.pname}}</p>
         <p class="line-h">审批流程: </p>
         <p>{{item.nodeArray}}</p>  
       </router-link>
-      <!-- <section class="task bg-blue">
-        <p class="line-h">名称: {{}}</p>
-        <p class="line-h">审批流程</p>
-        <p>会计-仓管员-水电施工员-出纳-流程发起人-项目经理-材料员-公司经理</p>  
-      </section>       -->
       <div class="add-btn">
         <router-link to="/addFlow" tag="div">
           <i class="iconfont icon-jia"></i>添加流程          
@@ -63,7 +58,7 @@ export default {
   @import '~common/stylus/variable'
   .line-h
     line-height 1.6!important
-  .bg-blue
+  .bgBlue
     background-color $color-background-blue
   .home
     color: $color-text-d
@@ -77,6 +72,7 @@ export default {
       position relative
       padding .373333rem
       box-sizing border-box
+      margin-bottom 1.2rem
       .task
         width 100%
         height auto

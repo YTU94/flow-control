@@ -32,7 +32,7 @@
       </section>
     </div>
     <!-- btn -->
-    <div class="btn" @click="_editMember()">确定修改</div>
+    <button class="btn" @click="_editMember()" :class="{disabledStyle: checkValue}" :disabled="checkValue">确定修改</button>
   </div>
 </template>
 
@@ -53,6 +53,15 @@
         sex: '',
         user: '',
         pwd: ''
+      }
+    },
+    computed: {
+      checkValue: function () {
+        if (!this.rname || !this.name || !this.user || !this.pwd) {
+          return true
+        } else {
+          return false
+        }
       }
     },
     created () {
@@ -135,5 +144,6 @@
       height 1.2rem
       line-height 1.2rem
       text-align center
-      border-radius .133333rem                  
+      border-radius .133333rem
+      border none                   
 </style>

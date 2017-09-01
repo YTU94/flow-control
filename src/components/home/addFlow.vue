@@ -11,9 +11,9 @@
         </div>
       </div>
     </div>
-    <div class="btn" @click="_addApproval">
+    <button class="btn" @click="_addApproval" :class="{disabledStyle: checkValue}" :disabled="checkValue">
       生成流程
-    </div>
+    </button>
   </div>
   <div class="add-member" v-else>
     <div class="header border-bottom">
@@ -27,7 +27,7 @@
         <i @click="select($event)" class="iconfont icon-yuanquan"></i>  {{item.rname}}
       </p>
     </div>
-    <div class="btn" @click="sure">确定</div>
+    <div class="btn" @click="sure" >确定</div>
   </div>
 </template>
 
@@ -47,6 +47,15 @@ export default {
       name: '',
       list: '',
       start: ''
+    }
+  },
+  computed: {
+    checkValue: function () {
+      if (!this.name || this.selectArray.length === 0) {
+        return true
+      } else {
+        return false
+      }
     }
   },
   created () {
@@ -79,7 +88,6 @@ export default {
     },
     hide (e) {
       e.target.style.display = 'none'
-      debugger
       this.$arrayRemoveByValue(this.selectArray, e.target.innerHTML.trim())
       console.log(this.selectArray)
     },
@@ -190,5 +198,7 @@ export default {
       height 1.2rem
       line-height 1.2rem
       text-align center
-      border-radius .133333rem     
+      border-radius .133333rem
+      border none 
+      outline none     
 </style>

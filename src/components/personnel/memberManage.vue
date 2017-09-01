@@ -7,7 +7,7 @@
     </div>
     <div class="header h-background" v-else>
       <i class="iconfont icon-sousuo s-icon"></i>
-      <input type="text" class="s-input" placeholder="请输入">
+      <input type="text" class="s-input" placeholder="请输入" ref='search' @input='searchV()'>
       <span class="s-cancel" @click="search = 0">取消</span>
     </div>
     <!-- main body -->
@@ -41,7 +41,8 @@ export default {
   data () {
     return {
       search: 0, // 顶部搜索栏
-      memberList: []
+      memberList: [],
+      memberListNew: []
     }
   },
   created () {
@@ -59,6 +60,7 @@ export default {
               }
             }
           }
+          this.memberListNew = this.memberList
         }
       })
       .catch(error => {
@@ -73,6 +75,19 @@ export default {
             e.target.parentNode.style.display = 'none'
           }
         })
+    },
+    // 搜索
+    searchV() {
+      var v = this.$refs.search.value
+      var list = this.memberListNew
+      this.memberList = []
+      for (let i = 0; i < list.length; i++) {
+        if (list[i].name.indexOf(v) >= 0 || list[i].rname.indexOf(v) >= 0) {
+          this.memberList.splice(i, 0, list[i])
+        } else {
+          return false
+        }
+      }
     },
     touchS (e) {
       var expansion = null
