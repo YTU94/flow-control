@@ -11,7 +11,6 @@
       <span class="s-cancel" @click="search = 0" >取消</span>
     </div>
     <!-- main body -->
-    <h3 class="title">会计</h3>
     <div class="content">
       <ul class="list">
         <li class="" v-on:touchstart="touchS($event)" v-for="item in materialList" :key="item.id">
@@ -118,8 +117,9 @@ export default {
       for (let i = 0; i < list.length; i++) {
         if (list[i].content.indexOf(v) >= 0 || list[i].stuff_name.indexOf(v) >= 0) {
           this.materialList.splice(i, 0, list[i])
+          console.log('get and splice')
         } else {
-          return false
+          console.log('not get')
         }
       }
     },
@@ -206,6 +206,7 @@ export default {
       float left
       width 100%
       margin-bottom 1.2rem
+      margin-top .2rem
       .list
         background #fff
         overflow hidden

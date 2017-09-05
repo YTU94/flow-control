@@ -1,5 +1,6 @@
 <template>
   <div class="member-manage">
+    <m-dialog v-show="auth_2 != '2'" msg="你的权限等级不足" btn="确定" v-on:getMsg="showMsg"></m-dialog>
     <!-- header -->
     <div class="header" v-if="search === 0">
       <m-header links="/personnel" msg="人员管理"></m-header>
@@ -11,19 +12,23 @@
       <span class="s-cancel" @click="search = 0">取消</span>
     </div>
     <!-- main body -->
-    <h3 class="title">会计</h3>
-    <div class="content">
-      <ul class="list">
-        <li class="" v-on:touchstart="touchS($event)" v-for="item in memberList" :key="item.id">
+    
+    <div class="content" v-show="item.user.length > 0" v-for="item in memberList" :key="item.id">
+      <div style="width:100%;float:left;background:#efeff0">
+        <h3 class="title">{{item.rname}}</h3>
+      </div>
+      <ul class="list" style="width:100%">
+        <li class="" v-on:touchstart="touchS($event)" v-for="itemli in item.user" :key="itemli.index">
           <div class="item-msg">
-            <p class="msg-one">{{item.rname | checkNull('职位名称')}}<span class="msg-sex">{{item.sex | checkNull('性别')}}</span></p>
-            <p class="msg-two">账号：{{item.name | checkNull('姓名')}}</p>
+            <p class="msg-one">{{itemli.rname | checkNull('职位名称')}}<span class="msg-sex">{{itemli.sex | checkNull('性别')}}</span></p>
+            <p class="msg-two">账号：{{itemli.name | checkNull('姓名')}}</p>
           </div>
           <span class="item-delete" @click="_deleteMember(item.id, $event)">删除</span>          
-          <router-link tag="span" :to="{name: 'memberUpdate', params: {id: item.id}}" class="item-update"></router-link>
+          <router-link tag="span" :to="{name: 'memberUpdate', params: {id: item.id, rname: itemli.rname, name: itemli.name, user: itemli.user, pwd: itemli.pwd}}" class="item-update"></router-link>
         </li>       
       </ul>
     </div>
+    <div style="float:left;width:100%; height:1.2rem"></div>
     <!-- foot btn -->
     <router-link tag="div" to="/memberAdd" class="btn">
       <i class="iconfont icon-jia"></i> 添加人员
@@ -33,13 +38,16 @@
 
 <script>
 import api from 'api/api'
+import MDialog from 'components/dialog/dialog'
 import MHeader from 'components/m-header/m-header'
 export default {
   components: {
-    MHeader
+    MHeader,
+    MDialog
   },
   data () {
     return {
+      auth_2: sessionStorage.auth_2,
       search: 0, // 顶部搜索栏
       memberList: [],
       memberListNew: []
@@ -49,17 +57,18 @@ export default {
     api.getAllPerson(sessionStorage.id, sessionStorage.token)
       .then(res => {
         if (res.code === 200) {
-          var user = []
-          for (let i = 0; i < res.message.length; i++) {
-            user.splice(i, 0, res.message[i].user)
-          }
-          for (let i = 0; i < user.length; i++) {
-            if (user[i].length > 0) {
-              for (let a = 0; a < user[i].length; a++) {
-                this.memberList.splice(a, 0, user[i][a])
-              }
-            }
-          }
+          this.memberList = res.message
+          // var user = []
+          // for (let i = 0; i < res.message.length; i++) {
+          //   user.splice(i, 0, res.message[i].user)
+          // }
+          // for (let i = 0; i < user.length; i++) {
+          //   if (user[i].length > 0) {
+          //     for (let a = 0; a < user[i].length; a++) {
+          //       this.memberList.splice(a, 0, user[i][a])
+          //     }
+          //   }
+          // }
           this.memberListNew = this.memberList
         }
       })
@@ -68,6 +77,10 @@ export default {
       })
   },
   methods: {
+    showMsg (data) {
+      console.log(data)
+      this.$router.push('/personnel')
+    },
     _deleteMember(pid, e) {
       api.deletePerson(sessionStorage.id, sessionStorage.token, pid, e)
         .then(res => {
@@ -81,11 +94,20 @@ export default {
       var v = this.$refs.search.value
       var list = this.memberListNew
       this.memberList = []
+      var user = []
+      var rname = ''
       for (let i = 0; i < list.length; i++) {
-        if (list[i].name.indexOf(v) >= 0 || list[i].rname.indexOf(v) >= 0) {
-          this.memberList.splice(i, 0, list[i])
+        if (list[i].user.length > 0) {
+          console.log('has')
+          rname = list[i].rname
+          for (let a = 0; a < list[i].user.length; a++) {
+            if (list[i].user[a].name.indexOf(v) >= 0 || list[i].user[a].rname.indexOf(v) >= 0) {
+              user.splice(a, 0, list[i].user[a])
+            }
+          }
+          this.memberList.splice(i, 0, {rname: rname, user: user})
         } else {
-          return false
+          console.log('not get')
         }
       }
     },
@@ -171,7 +193,7 @@ export default {
     .content
       float left
       width 100%
-      margin-bottom 1.2rem
+      // margin-bottom 1.2rem
       .list
         background #fff
         overflow hidden

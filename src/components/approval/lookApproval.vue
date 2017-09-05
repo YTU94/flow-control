@@ -5,23 +5,23 @@
     <div class="main-body">
       <!-- main body -->
       <div class="flow">
-        <p class="f-content">编号：{{approval.num}}</p>
-        <p class="f-content">名称：{{approval.name}}</p>
+        <p class="f-content">编号：{{approval.rid}}</p>
+        <p class="f-content">名称：{{approval.pname}}</p>
         <p class="f-content">审批流程：</p>
-        <p class="f-content-s">{{approval.content}}</p>        
+        <p class="f-content-s">{{approval.nodeArray}}</p>        
         <p class="f-content">材料：</p>
-        <p class="f-content-s">004-水泥 （带） -5000</p>
+        <p class="f-content-s">{{approval.datasave}}</p>
       </div>
       <div class="flow">
-        <p class="f-content">发起人：{{approval.suber}}</p>
+        <p class="f-content">发起人：{{approval.subname}}</p>
         <p class="f-content">审批内容：</p>
-        <p class="f-content-s">改消费属于垃圾消费，渣渣的是多少卡的空间撒谎的课件撒是的辉煌科技时代监控和撒的结合</p>        
-        <p class="f-content">提出人：出纳丽丽</p>
+        <p class="f-content-s">{{approval.oneContent}}</p>        
+        <p class="f-content">提出人：{{approval.subname}}</p>
         <p class="f-content">提交意见：</p>
-        <p class="f-content-s">没问题</p>
+        <p class="f-content-s">{{approval.content}}</p>
       </div>
       <div class="flow">
-        <p class="f-content">审批人：{{approval.reApproval}}</p>
+        <p class="f-content">审批人：{{approval.rname}}</p>
         <p class="f-content">审批意见：</p>
         <p class="f-content-s">
           <input type="text" class="f-content-i" v-model="content" placeholder="请输入审批内容">
@@ -45,10 +45,10 @@
         <div class="form-group border-bottom">
           <label for="" class="f-label">审批人：</label>
           <i class="iconfont icon-xiangxia float-right" ref="icon" @click="showSelect()"></i>
-          <input type="text" class="f-input" v-model="nextReApproval">
+          <input type="text" class="f-input" v-model="nextReApproval" readonly>
         </div>
         <div class="select-content" v-show="select === 1">
-          <p class="border-bottom select-item" @click="nextReApproval = item.name" v-for="item in memberList" :key="item.index">{{item.rname | checkNull('职位名称')}} | {{item.name | checkNull('姓名')}}</p>
+          <p class="border-bottom select-item" @click="nextReApproval = item.name" v-for="item in memberList" :key="item.index">{{item.name | checkNull('姓名')}} | {{item.rname | checkNull('职位名称')}}</p>
         </div>
       </div>
     </div>
@@ -78,11 +78,15 @@ export default {
       content: '', // 当前审批内容,
       state: '', // 审批状态
       approval: {
-        num: '', // 流程编号
-        name: '', // 流程名称
-        content: '', // 流程内容
-        suber: '', // 发起人
-        reApproval: '' // 审批人
+        rid: '', // 编号
+        pname: '', // 名称
+        nodeArray: '', // 流程
+        datasave: '', // 材料
+        startName: '', // 发起人 -- 不对
+        oneContent: '', // 审批内容
+        subname: '', // 提交人
+        content: '', // 提交内容
+        rname: '' // 单前审批人
       }
     }
   },
@@ -98,8 +102,6 @@ export default {
   created () {
     console.log(this.$route.params)
     this._getApprovalInfo(this.$route.params.fid)
-    // this._getProcessInfo(this.$route.params.lid)
-    this._getAllPerson()
   },
   methods: {
     showSelect() {
@@ -111,35 +113,32 @@ export default {
       api.getApprovalInfo(sessionStorage.id, sessionStorage.token, fid)
         .then(res => {
           if (res.code === 200) {
-            this.approval.reApproval = res.message.rname
-            this.approval.num = res.message.process[0].pid
-            this.approval.name = res.message.process[0].pname
-            this.approval.content = res.message.process[0].nodeArray
-            this.approval.suber = res.message.process[0].start
+            this.approval = res.message || ''
+            this.approval.rid = res.message.rid || ''
+            this.approval.pname = res.message.process[0].pname || ''
+            this.approval.nodeArray = res.message.process[0].nodeArray || ''
+            this.approval.datasave = res.message.datasave || ''
+            this.approval.startName = res.message.process[0].start || '有问题'
+            this.approcal.oneContent = res.message.one.content || ''
+            this.approcal.rname = res.message.rname || ''
+            // get fid
             this.fId = res.message.id
+            // get people
+            if (parseInt(res.message.position) === res.message.process[0].nodeArray.split('-').length) {
+              this.nextReApproval = '没有下级审批人'
+              return false
+            } else {
+              var name = res.message.process[0].nodeArray.split('-')[parseInt(res.message.position) + 1]
+              // 获取当前审批人
+              api.getApprovalPeople(sessionStorage.id, sessionStorage.token, name)
+                .then(res => {
+                  this.memberList = res.message || ''
+                })
+                .catch(error => {
+                  console.log(error)
+                })
+            }
             console.log(this.approval)
-          }
-        })
-        .catch(error => {
-          console.log(error)
-        })
-    },
-    // 获取所有人员
-    _getAllPerson() {
-      api.getAllPerson(sessionStorage.id, sessionStorage.token)
-        .then(res => {
-          if (res.code === 200) {
-            var user = []
-            for (let i = 0; i < res.message.length; i++) {
-              user.splice(i, 0, res.message[i].user)
-            }
-            for (let i = 0; i < user.length; i++) {
-              if (user[i].length > 0) {
-                for (let a = 0; a < user[i].length; a++) {
-                  this.memberList.splice(a, 0, user[i][a])
-                }
-              }
-            }
           }
         })
         .catch(error => {

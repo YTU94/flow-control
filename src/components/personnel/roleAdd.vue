@@ -4,12 +4,13 @@
     <section class="select">
       <div class="form-group border-bottom">
         <label for="" class="f-label">角色名：</label>
-        <input type="text" v-model="rname" placeholder="请输入" class="f-input" readonly>
+        <input type="text" v-model="rname" placeholder="请输入" class="f-input">
       </div>      
       <div class="form-group border-bottom">
         <label for="" class="f-label">权限等级：</label>
-        <i class="iconfont icon-xiangxia float-right" ref="icon" @click="showSelect()"></i>        
-        <input type="text" v-model="rule" class="f-input" name="" id="" placeholder="等级" readonly>
+        <i class="iconfont icon-xiangxia float-right" ref="icon" @click="showSelect()"></i>
+        <span class="float-right">{{rule|ruleT}}</span>     
+        <!-- <input type="text" v-model="{{rule | ruleT}}" class="f-input" name="" id="" placeholder="等级" readonly> -->
       </div>
       <div class="select-content" v-show="select === 1">
         <p class="border-bottom select-item" @click="rule = 1, select = 0">一级</p>
@@ -97,7 +98,6 @@ export default {
           border none
           height 1.2rem
           line-height 1.2rem
-          padding-right .2rem
       .select-content
         background #E9F0EF
         padding .2rem .4rem

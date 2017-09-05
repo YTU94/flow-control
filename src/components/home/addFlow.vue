@@ -1,5 +1,8 @@
 <template>
   <div class="add-flow" v-if="page === 0">
+    <transition name="fade">
+      <m-dialog msg="生成成功" btn="" v-show="success === 1"></m-dialog>
+    </transition>
     <m-header links='/home' msg="添加流程"></m-header>
     <div class="main-body">
       <p class="flow-name border-bottom">流程名：<input type="text" v-model="name" class="flow-name-i" placeholder="请输入流程名"></p>
@@ -27,22 +30,26 @@
         <i @click="select($event)" class="iconfont icon-yuanquan"></i>  {{item.rname}}
       </p>
     </div>
-    <div class="btn" @click="sure" >确定</div>
+    <button class="btn" @click="sure">确定</button>
   </div>
 </template>
 
 <script>
 import api from 'api/api'
+import MDialog from 'components/dialog/dialog'
 import MHeader from 'components/m-header/m-header'
 export default {
   components: {
-    MHeader
+    MHeader,
+    MDialog
   },
   data () {
     return {
       page: 0,
+      success: 0,
       roleList: [],
       selectArray: [],
+      ruleArray: [],
       // 添加流程数据
       name: '',
       list: '',
@@ -55,6 +62,14 @@ export default {
         return true
       } else {
         return false
+      }
+    },
+    checkValueOfRule: function () {
+      this.ruleArray = document.querySelectorAll('.icon-xuanzhong') || []
+      if (this.ruleArray.length > 0) {
+        return true
+      } else {
+        return true
       }
     }
   },
@@ -74,22 +89,28 @@ export default {
       if (event.target.className.indexOf('xuanzhong') > 0) {
         event.target.className = 'iconfont icon-yuanquan'
       } else {
+        var nodes = document.querySelectorAll('.members p i')
+        for (let i = 0; i < nodes.length; i++) {
+          if (nodes[i].className.indexOf('xuanzhong') > 0) {
+            nodes[i].className = 'iconfont icon-yuanquan'
+          }
+        }
         event.target.className = 'iconfont icon-xuanzhong'
       }
     },
     sure () { // 把选择的传递到前面
       this.page = 0
       var nodes = document.querySelectorAll('.members p')
+      // 不清空array
+      // this.selectArray = []
       for (let i = 0; i < nodes.length; i++) {
         if (nodes[i].childNodes[0].className.indexOf('xuanzhong') > 0) {
-          this.selectArray.splice(i, 0, nodes[i].childNodes[1].data.trim())
+          this.selectArray.push(nodes[i].childNodes[1].data.trim())
         }
       }
     },
     hide (e) {
-      e.target.style.display = 'none'
       this.$arrayRemoveByValue(this.selectArray, e.target.innerHTML.trim())
-      console.log(this.selectArray)
     },
     // 添加流程
     _addApproval() {
@@ -99,6 +120,11 @@ export default {
         .then(res => {
           if (res.code === 200) {
             console.log(res)
+            this.success = 1
+            var that = this
+            setTimeout(function() {
+              that.$router.push('/home')
+            }, 1000)
           }
         })
         .catch(error => {
@@ -113,6 +139,8 @@ export default {
   @import '~common/stylus/variable'
   .icon-yuanquan, .icon-xuanzhong
     color $color-text-a
+  .add-member
+    padding-bottom 1.6rem  
   .add-flow, .add-member
     background $color-background
     position absolute
@@ -200,5 +228,6 @@ export default {
       text-align center
       border-radius .133333rem
       border none 
-      outline none     
+      outline none
+      margin-bottom .4rem  
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <div class="header border-bottom">
-      远航科技有限公司
+      远航一卡通管理系统
     </div>
     <div class="main-body">
       <router-link tag="div"  class="task" v-bind:class="{ bgBlue: parseInt(index) % 2 === 1 }" :to="{name: 'approvalDetail', params: {name: item.pname, id: item.id, nodeArray: item.nodeArray, start: item.start}}" v-for="(item, index) in approvalList" :key="item.index">
@@ -9,7 +9,7 @@
         <p class="line-h">审批流程: </p>
         <p>{{item.nodeArray}}</p>  
       </router-link>
-      <div class="add-btn">
+      <div class="add-btn" v-show="auth_5 === '5'">
         <router-link to="/addFlow" tag="div">
           <i class="iconfont icon-jia"></i>添加流程          
         </router-link>
@@ -28,7 +28,8 @@ export default {
   },
   data () {
     return {
-      approvalList: []
+      approvalList: [],
+      auth_5: sessionStorage.auth_5
     }
   },
   created() {

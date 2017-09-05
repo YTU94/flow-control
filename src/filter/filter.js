@@ -10,21 +10,20 @@ function checkNull (val, target) {
   }
 }
 function ruleT (val) {
-  if (!val) {
-    debugger
-    if (val === 1) {
+  if (val) {
+    if (parseInt(val) === 1) {
       return '一级'
     }
-    if (val === 2) {
+    if (parseInt(val) === 2) {
       return '二级'
     }
-    if (val === 3) {
+    if (parseInt(val) === 3) {
       return '三级'
     }
-    if (val === 4) {
+    if (parseInt(val) === 4) {
       return '四级'
     }
-    if (val === 5) {
+    if (parseInt(val) === 5) {
       return '五级'
     }
   } else {

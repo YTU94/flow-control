@@ -1,6 +1,8 @@
 <template>
   <div class="login">
-    <m-dialog msg="请输入完整信息" btn="确定" v-if="dialog === 1"></m-dialog>
+    <transition name="fade">
+      <m-dialog  msg="登陆失败" btn="确定" v-show="dialog === 1" v-on:getMsg="showMsg"></m-dialog>
+    </transition>
     <section class="title">
       远航审批管理系统
     </section>
@@ -36,8 +38,8 @@ export default {
     return {
       dialog: 0,
       // user
-      userName: '费升阳',
-      password: 'fsy123456',
+      userName: '单',
+      password: '123456',
       company: '35号地块'
     }
   },
@@ -51,6 +53,10 @@ export default {
     }
   },
   methods: {
+    showMsg (data) {
+      console.log(data)
+      this.dialog = parseInt(data)
+    },
     login() {
       api.login(this.userName, this.password, this.company)
         .then(res => {
@@ -59,9 +65,22 @@ export default {
             // id token 存入 sessionStorage
             sessionStorage.id = res.message.id
             sessionStorage.token = res.message.token
-            this.$router.push('/home')
+            api.getCheckRule(sessionStorage.id, sessionStorage.token)
+              .then(res => {
+                // debugger
+                sessionStorage.auth_1 = res.message[0] === undefined ? '0' : res.message[0].id // 角色管理
+                sessionStorage.auth_2 = res.message[1] === undefined ? '0' : res.message[1].id // 人员管理
+                sessionStorage.auth_4 = res.message[2] === undefined ? '0' : res.message[2].id // 权限管理
+                sessionStorage.auth_5 = res.message[3] === undefined ? '0' : res.message[3].id // 添加管理
+                sessionStorage.auth_6 = res.message[4] === undefined ? '0' : res.message[4].id // 删除模板管理
+                this.$router.push('/home')
+              })
+              .catch(error => {
+                console.log(error)
+              })
           } else {
             console.log('登录失败')
+            this.dialog = 1
           }
         })
         .catch(error => {

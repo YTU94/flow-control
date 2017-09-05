@@ -20,14 +20,12 @@ axios.interceptors.request.use((config) => {
 
 // 返回状态判断
 axios.interceptors.response.use((res) => {
-  if (!res.data.success) {
-    // _.toast(res.data.msg)
+  if (res.data.code === 200) {
     console.log('api:success')
     return Promise.resolve(res)
   }
   return res
 }, (error) => {
-  // _.toast("网络异常", 'fail')
   return Promise.reject(error)
 })
 
@@ -46,11 +44,15 @@ export function fetch (url, parmas) {
 }
 
 export default {
-  login (name, pwd, firm) { // 登陆
+  // 登陆
+  login (name, pwd, firm) {
     return fetch('/web/index.php?r=api%2Flogin', {name: name, pwd: pwd, firm: firm})
   },
   getUserInfo (uid, token) {
     return fetch('/web/index.php?r=api%2Fgetone', {uid: uid, token: token})
+  },
+  getCheckRule (uid, token) {
+    return fetch('/web/index.php?r=api%2Fgetauth', {uid: uid, token: token})
   },
   // 获取审批流程
   getApproval (uid, token) {

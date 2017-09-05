@@ -19,10 +19,10 @@
         <div class="form-group border-bottom">
           性别：
           <span class="state-item">
-            <i @click="isActive0 = 1, isActive1 = 0" class="iconfont icon-yuanquan" v-bind:class="{ 'icon-xuanzhong': isActive0 }"></i>    男
+            <i @click="isActive0 = 1, isActive1 = 0" class="iconfont icon-yuanquan" v-bind:class="{ 'icon-xuanzhong': isActive0 }"></i>    女
           </span>
           <span class="state-item">
-            <i @click="isActive0 = 0, isActive1 = 1" class="iconfont icon-yuanquan" v-bind:class="{ 'icon-xuanzhong': isActive1 }"></i>    女
+            <i @click="isActive0 = 0, isActive1 = 1" class="iconfont icon-yuanquan" v-bind:class="{ 'icon-xuanzhong': isActive1 }"></i>    男
           </span>
         </div>
         <div class="form-group border-bottom">

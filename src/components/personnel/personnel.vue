@@ -36,10 +36,10 @@
     <div class="model" v-show="model === 1"></div>
     <transition name="dialog">
       <div class="model-c" v-show="model === 1">
-        <p class="model-t border-bottom">确定退出等吗？</p>
+        <p class="model-t border-bottom">确定退出登录吗？</p>
         <p class="model-p">
           <span class="model-span" @click="model = 0">取消</span>
-          <span class="model-span color-a" @click="layout()">推出</span>
+          <span class="model-span color-a" @click="layout()">退出</span>
         </p>
       </div>
     </transition>
@@ -81,18 +81,6 @@ export default {
 
 <style lang="stylus" scoped>
   @import '~common/stylus/variable'
-  .dialog-enter-active,.dialog-leave-active
-    opacity 1
-    transition-duration .4s
-    transform translate(-50%,-50%) scale(1)!important
-  .dialog-leave-active 
-    transition-duration .3s
-  .dialog-enter 
-    opacity 0
-    transform translate(-50%,-50%) scale(1.185)!important
-  .dialog-leave-active 
-    opacity 0
-    transform translate(-50%,-50%) scale(.85)!important
   .personnel
     position absolute
     width 100%

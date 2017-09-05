@@ -1,11 +1,14 @@
 <template>
-  <div class="dialog" v-if="show === 1">
-    <div class="model-bg"></div>
-    <div class="model">
-      <p class="border-bottom msg">{{msg}}</p>
-      <p class="btn" @click="show = 0">{{btn}}</p>
-    </div>    
+  <div class="dialog">
+    <div class="model-bg" v-show="btn != ''"></div>
+    <transition name="dialog">    
+      <div class="model">
+        <p class="border-bottom msg" :class="{toast: btn === ''}">{{msg}}</p>
+        <p class="btn" v-on:click="sendMsg" v-show="btn != ''">{{btn}}</p>
+      </div> 
+    </transition>   
   </div>
+  
 </template>
 
 <script>
@@ -18,16 +21,31 @@ export default {
     return {
       show: 1
     }
+  },
+  mounted () {
+    console.log('dialog')
+  },
+  methods: {
+    sendMsg () {
+      this.$emit('getMsg', '0')
+    }
   }
 }
 </script>
 
 <style lang="stylus" scoped>
+@import '~common/stylus/variable'
+.toast
+  background rgba(18, 18, 18, 0.7)
+  color #fff
+  padding  .4rem!important
+  border-radius .2rem
 .dialog
   position fixed
   width 100%
   height 100%
   z-index 10001
+  text-align center
   .model-bg
     position fixed
     width 100%

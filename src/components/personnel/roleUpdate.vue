@@ -8,8 +8,9 @@
       </div>      
       <div class="form-group border-bottom">
         <label for="" class="f-label">权限等级：</label>
-        <i class="iconfont icon-xiangxia float-right" ref="icon" @click="showSelect()"></i>        
-        <input type="text" v-model="rule" class="f-input" name="" id="" placeholder="等级" readonly>        
+        <i class="iconfont icon-xiangxia float-right" ref="icon" @click="showSelect()"></i>     
+        <span class="float-right">{{rule|ruleT}}</span>   
+        <!-- <input type="text" v-model="rule" class="f-input" name="" id="" placeholder="等级" readonly>         -->
       </div>
       <div class="select-content" v-show="select === 1">
         <p class="border-bottom select-item" @click="rule = 1, select = 0">一级</p>
@@ -35,7 +36,7 @@ export default {
     return {
       select: 0,
       rname: '',
-      rule: ''
+      rule: 1
     }
   },
   computed: {
@@ -49,6 +50,7 @@ export default {
   },
   created () {
     console.log(this.$route.params)
+    this.rname = this.$route.params.rname
   },
   methods: {
     showSelect () {

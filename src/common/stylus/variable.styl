@@ -29,7 +29,28 @@ bg-image($url)
   background-image: url($url + "@2x.png")
   @media (-webkit-min-device-pixel-ratio: 3),(min-device-pixel-ratio: 3)
     background-image: url($url + "@2x.png")
-//
+// btn disabled
 .disabledStyle
   background #a5b5b2!important
   color #d8d7d3 !important
+// model 弹出动画
+.dialog-enter-active,.dialog-leave-active
+  opacity 1
+  transition-duration .4s
+  transform translate(-50%,-50%) scale(1)!important
+.dialog-leave-active 
+  transition-duration .3s
+.dialog-enter 
+  opacity 0
+  transform translate(-50%,-50%) scale(1.185)!important
+.dialog-leave-active 
+  opacity 0
+  transform translate(-50%,-50%) scale(.85)!important  
+
+.fade-enter-active, .fade-leave-active
+  opacity: 1
+  transition-duration: .4s
+.fade-enter
+  opacity: 0
+.fade-leave-to
+  opacity: 0     

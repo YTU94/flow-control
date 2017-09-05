@@ -7,8 +7,8 @@ import filter from './filter/filter'
 Vue.config.productionTip = false
 Vue.prototype.$arrayRemoveByValue = function (arr, val) {
   for (let i = 0; i < arr.length; i++) {
-    if (arr[i] === val) {
-      arr.splice(i, i)
+    if (arr[i].trim() === val) {
+      arr.splice(i, 1)
       break
     }
   }

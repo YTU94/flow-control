@@ -1,5 +1,8 @@
 <template>
   <div class="approval-detail">
+    <transition name="fade">
+      <m-dialog msg="执行成功" btn="" v-show="success === 1"></m-dialog>
+    </transition>
     <m-header links='/home' msg="资金审批"></m-header> 
     <div class="main-body">
       <section class="content">
@@ -14,7 +17,7 @@
         <div class="form-group border-bottom">
           <label for="" class="f-label">材料：</label>
           <i class="iconfont icon-xiangxia float-right" ref="icon0" @click="showSelect(0)"></i>
-          <input class="f-input" v-model="materialValue" type="text">          
+          <input class="f-input" v-model="materialValue" type="text" readonly>          
         </div>
         <div class="select-content" v-show="select0 === 1">
           <p class="border-bottom select-item" @click="selectMaterial(item.id, item.stuff_name)" v-for="item in material" :key="item.id">{{item.stuff_id}}    {{item.stuff_name}}</p>
@@ -34,13 +37,13 @@
         <div class="form-group border-bottom">
           <label for="" class="f-label">添加审批人：</label>
           <i class="iconfont icon-xiangxia float-right" ref="icon1" @click="showSelect(1)"></i>
-          <input class="f-input" v-model="contentValue" type="text">
+          <input class="f-input" v-model="contentValue" type="text" readonly>
         </div>
         <div class="select-content" v-show="select1 === 1">
-          <p class="border-bottom select-item" v-for="item in approvalPeople" @click="addFlow.rname = contentValue = item.name" :key="item.id">{{item.name}}    有问题</p>
+          <p class="border-bottom select-item" v-for="item in approvalPeople" @click="addFlow.rname = contentValue = item.name, select = 1" :key="item.id">{{item.name}}   {{item.rname}}</p>
         </div>
       </section>
-      <button class="btn" @click="add()" :class="{disabledStyle: checkValue}" :disabled="checkValue">执行</button>
+      <button class="btn" @click="_addApprovalFlow" :class="{disabledStyle: checkValue}" :disabled="checkValue">执行</button>
     </div>
   </div>
 </template>
@@ -48,16 +51,19 @@
 <script>
 import api from 'api/api'
 import MHeader from 'components/m-header/m-header'
+import MDialog from 'components/dialog/dialog'
 export default {
   components: {
-    MHeader
+    MHeader,
+    MDialog
   },
   data () {
     return {
       select0: 0,
       select1: 0,
+      success: 0,
       material: [],
-      approvalPeople: [],
+      approvalPeople: [], // 下级审批人员
       materialValue: '',
       contentValue: '',
       addFlow: {
@@ -82,12 +88,12 @@ export default {
     console.log(this.$route.params)
     // 首页路由传过来 流程的参数
     this.pid = this.$route.params.pid
-    this.name = this.$route.params.name
+    this.name = this.$route.params.nodeArray.split('-')[1] || ''
     this.nodeArray = this.$route.params.nodeArray
-    this.start = this.$route.params.start
+    // this.start = this.$route.params.start
     // 初始化获取材料和审批人
     this._getMaterialList(sessionStorage.id, sessionStorage.token)
-    this._getApprovalPeople(sessionStorage.id, sessionStorage.token, this.start)
+    this._getApprovalPeople(sessionStorage.id, sessionStorage.token, this.name)
     this.materialObj = {}
   },
   mounted () {
@@ -106,6 +112,7 @@ export default {
     selectMaterial(id, val) {
       this.addFlow.dataId = id
       this.materialValue = val
+      this.select0 = 0
     },
     // 获取材料
     _getMaterialList(uid, token) {
@@ -123,13 +130,14 @@ export default {
     _getApprovalPeople(uid, token, name) {
       api.getApprovalPeople(uid, token, name)
         .then(res => {
-          if (res.code === 200) {
-            this.approvalPeople = res.message
-          }
+          this.approvalPeople = res.message
         })
         .catch(error => {
           console.log(error)
         })
+      .catch(error => {
+        console.log(error)
+      })
     },
     // 添加一个审批流程——执行
     _addApprovalFlow() {
@@ -137,6 +145,11 @@ export default {
         .then(res => {
           if (res.code === 200) {
             console.log(res)
+            this.success = 1
+            var that = this
+            setTimeout(function() {
+              that.$router.push('/approval/approvalAlready')
+            }, 1000)
           }
         })
         .catch(error => {

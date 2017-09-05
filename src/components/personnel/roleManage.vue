@@ -1,5 +1,6 @@
 <template>
   <div class="roleManage">
+    <m-dialog v-show="auth_1 != '1'" msg="你的权限等级不足" btn="确定" v-on:getMsg="showMsg"></m-dialog>
     <m-header links="/personnel" msg="角色管理"></m-header>
     <!-- main body -->
     <div class="content">
@@ -10,7 +11,7 @@
             <span class="item-level">{{item.check_rule}}</span>
           </p>
           <span class="item-delete"  @click="_deleteRole(item.id, $event)" >删除</span>          
-          <router-link tag="span" :to="{name: 'roleUpdate', params: {id: item.id}}" class="item-update"></router-link>
+          <router-link tag="span" :to="{name: 'roleUpdate', params: {id: item.id, rname: item.rname}}" class="item-update"></router-link>
         </li>
       </ul>
     </div>
@@ -24,13 +25,16 @@
 
 <script>
 import api from 'api/api'
+import MDialog from 'components/dialog/dialog'
 import MHeader from 'components/m-header/m-header'
 export default {
   components: {
-    MHeader
+    MHeader,
+    MDialog
   },
   data () {
     return {
+      auth_1: sessionStorage.auth_1,
       roleList: []
     }
   },
@@ -53,6 +57,10 @@ export default {
     }, 1000)
   },
   methods: {
+    showMsg (data) {
+      console.log(data)
+      this.$router.push('/personnel')
+    },
     addDelete() {
       var expansion = null
       var container = document.querySelectorAll('.list li')
