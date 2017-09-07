@@ -170,11 +170,9 @@ export default {
                 this.ifSubname = 0
               }
             }
-            if (parseInt(this.state) !== 0) {
+            if (parseInt(this.state) === 1 || parseInt(this.state) === 2) {
               // debugger
-              // state 3 回滚重新填写
-              if (parseInt(this.state) === 3) {
-              }
+              // state 1 2  不能操作
               console.log('不可以操作')
               // 选择审批人 不可操作
               this.isActive0 = parseInt(this.state)
