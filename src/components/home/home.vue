@@ -4,7 +4,7 @@
       远航一卡通管理系统
     </div>
     <div class="main-body">
-      <router-link tag="div"  class="task" v-bind:class="{ bgBlue: parseInt(index) % 2 === 1 }" :to="{name: 'approvalDetail', params: {name: item.pname, id: item.id, nodeArray: item.nodeArray, start: item.start}}" v-for="(item, index) in approvalList" :key="item.index">
+      <router-link v-if="rname === item.nodeArray.split('-')[0] || parseInt(auth_5) === 5" tag="div"  class="task" v-bind:class="{ bgBlue: parseInt(index) % 2 === 1 }" :to="{name: 'approvalDetail', params: {name: item.pname, id: item.id, nodeArray: item.nodeArray, start: item.start}}" v-for="(item, index) in approvalList" :key="item.index">
         <p class="line-h">名称: {{item.pname}}</p>
         <p class="line-h">审批流程: </p>
         <p>{{item.nodeArray}}</p>  
@@ -29,7 +29,8 @@ export default {
   data () {
     return {
       approvalList: [],
-      auth_5: sessionStorage.auth_5
+      auth_5: sessionStorage.auth_5,
+      rname: sessionStorage.rname
     }
   },
   created() {

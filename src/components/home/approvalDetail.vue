@@ -1,7 +1,7 @@
 <template>
   <div class="approval-detail">
     <transition name="fade">
-      <m-dialog msg="执行成功" btn="" v-show="success === 1"></m-dialog>
+      <m-dialog :msg="toastMsg" btn="" v-show="success === 1"></m-dialog>
     </transition>
     <m-header links='/home' msg="资金审批"></m-header> 
     <div class="main-body">
@@ -40,7 +40,7 @@
           <input class="f-input" v-model="contentValue" type="text" readonly>
         </div>
         <div class="select-content" v-show="select1 === 1">
-          <p class="border-bottom select-item" v-for="item in approvalPeople" @click="addFlow.rname = contentValue = item.name, select = 1" :key="item.id">{{item.name}}   {{item.rname}}</p>
+          <p class="border-bottom select-item" v-for="item in approvalPeople" @click="addFlow.rname = contentValue = item.name, select1 = 0" :key="item.id">{{item.name}}   {{item.rname}}</p>
         </div>
       </section>
       <button class="btn" @click="_addApprovalFlow" :class="{disabledStyle: checkValue}" :disabled="checkValue">执行</button>
@@ -59,6 +59,7 @@ export default {
   },
   data () {
     return {
+      toastMsg: '',
       select0: 0,
       select1: 0,
       success: 0,
@@ -143,12 +144,19 @@ export default {
     _addApprovalFlow() {
       api.addApprovalFlow(sessionStorage.id, sessionStorage.token, this.$route.params.id, this.addFlow.dataId, this.addFlow.num, this.addFlow.content, this.addFlow.rname)
         .then(res => {
+          var that = this
           if (res.code === 200) {
             console.log(res)
+            this.toastMsg = '执行成功'
             this.success = 1
-            var that = this
             setTimeout(function() {
               that.$router.push('/approval/approvalAlready')
+            }, 1000)
+          } else {
+            this.toastMsg = res.message
+            this.success = 1
+            setTimeout(function() {
+              that.success = 0
             }, 1000)
           }
         })

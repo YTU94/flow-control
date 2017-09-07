@@ -9,7 +9,7 @@
       <span class="s-cancel" @click="search = 0">取消</span>
     </div>
     <tab v-show="search === 0"></tab>
-    <router-view></router-view>
+    <router-view style="margin-bottom: 1.2rem"></router-view>
     <m-footer></m-footer>
   </div>
 </template>

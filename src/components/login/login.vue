@@ -38,9 +38,9 @@ export default {
     return {
       dialog: 0,
       // user
-      userName: '单',
+      userName: '丹 ',
       password: '123456',
-      company: '35号地块'
+      company: '美的'
     }
   },
   computed: {
@@ -65,6 +65,8 @@ export default {
             // id token 存入 sessionStorage
             sessionStorage.id = res.message.id
             sessionStorage.token = res.message.token
+            // 用户的的角色user.rname 存入 sessionStorage
+            sessionStorage.rname = res.message.rname
             api.getCheckRule(sessionStorage.id, sessionStorage.token)
               .then(res => {
                 // debugger

@@ -17,7 +17,6 @@ axios.interceptors.request.use((config) => {
   console.log('错误的传参', 'fail')
   return Promise.reject(error)
 })
-
 // 返回状态判断
 axios.interceptors.response.use((res) => {
   if (res.data.code === 200) {
@@ -48,9 +47,11 @@ export default {
   login (name, pwd, firm) {
     return fetch('/web/index.php?r=api%2Flogin', {name: name, pwd: pwd, firm: firm})
   },
+  // 获取用户详细信息
   getUserInfo (uid, token) {
     return fetch('/web/index.php?r=api%2Fgetone', {uid: uid, token: token})
   },
+  // 获取用户的所有权限
   getCheckRule (uid, token) {
     return fetch('/web/index.php?r=api%2Fgetauth', {uid: uid, token: token})
   },

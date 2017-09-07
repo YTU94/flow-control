@@ -6,11 +6,13 @@
     <div class="group" v-for="item in approvalList" :key="item.id">
       <p class="title">
         编号：{{item.rid}}
-        <span class="state">{{parseInt(item.ifread) === 1 ? '已审批' : '未审批'}}</span>
+        <span class="state">
+          {{(parseInt(item.position) + 1) === item.process[0].nodeArray.split('-').length ? (parseInt(item.state) === 1 ? '审批通过' : (parseInt(item.state) === 2 ? '审批失败' : '回滚')) : (parseInt(item.state) === 3 ? '回滚' : '审批中')}}
+        </span>
       </p>
       <div class="content">
         <p class="name">{{item.panme}}</p>
-        <p class="flow">{{item.process[0].nodeArray}}</p>
+        <p class="flow" v-if="item.process[0]">{{item.process[0].nodeArray}}</p>
       </div>
       <div class="tabs">
         <router-link tag="span" :to="{name: 'lookApproval', params: {fid: item.id, lid: item.lid}}">

@@ -73,6 +73,7 @@ export default {
   methods: {
     layout () {
       this.model = 0
+      sessionStorage.clear()
       this.$router.push('/')
     }
   }
