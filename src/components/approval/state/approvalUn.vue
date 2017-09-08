@@ -3,9 +3,10 @@
     <div class="group" v-for="item in approvalList" :key="item.id">
       <p class="title">
         编号：{{item.rid}}
-        <span class="state">
-          {{(parseInt(item.position) + 1) === item.process[0].nodeArray.split('-').length ? (parseInt(item.state) === 1 ? '审批通过' : (parseInt(item.state) === 2 ? '审批失败' : (parseInt(item.state) === 3) ? '回滚' : '审批中')) : (parseInt(item.state) === 3 ? '回-滚' : '审批中')}}
+        <span class="state" v-if="item.process[0]">
+           {{parseInt(item.state) === 1 ? '通过' : (parseInt(item.state) === 2 ? '不通过' : (parseInt(item.state) === 3 ? '回滚' : '未审批'))}}
         </span>
+        <span class="state" v-else>item.process[0]为空</span>
       </p>
       <div class="content">
         <p class="name">{{item.panme}}</p>
@@ -35,7 +36,6 @@ export default {
     api.getApprovalList(sessionStorage.id, sessionStorage.token, 1)
       .then(res => {
         if (res.code === 200) {
-          console.log(res)
           this.approvalList = res.message
         }
       })

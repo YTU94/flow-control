@@ -5,7 +5,7 @@
     </div>
     <div class="header h-background" v-else>
       <i class="iconfont icon-sousuo s-icon"></i>
-      <input type="text" class="s-input" placeholder="请输入" ref='search' @keyup.13="searchV()">
+      <input type="text" class="s-input" placeholder="请输入" ref='search' @input="searchV()">
       <span class="s-cancel" @click="search = 0">取消</span>
     </div>
     <tab v-show="search === 0"></tab>
@@ -36,15 +36,17 @@ export default {
       this.search = 1
       this.$router.push('/approval/approvalAll')
     },
+    // 搜索工作
     searchV() {
       // debugger
       var v = this.$refs.search.value
+      console.log('item 组件', this.$children[1])
       for (let i = 0; i < this.$children.length; i++) {
         var list = this.$children[1].$children[i]._data.approvalList || ''
         console.log(i, list)
         for (let a = 0; a < list.length; i++) {
-          if (list[a].pname) {
-            if (list[a].pname.indexOf(v) > 0) {
+          if (list[a].pname && list[a].rid) {
+            if (list[a].pname.indexOf(v) > 0 || list[a].rid.indexOf(v) > 0) {
               console.log('get')
               this.$children[1].$children[i]._data.approvalList = []
               this.$children[1].$children[i]._data.approvalList.splice(i, 0, list[a])
@@ -56,7 +58,6 @@ export default {
           }
         }
       }
-      console.log(this.$children)
     }
   }
 }

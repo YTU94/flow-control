@@ -105,7 +105,7 @@ export default {
         subname: '', // 提交人
         content: '', // 提交内容
         rname: '', // 单前审批人
-        rule: '' // 次级审批人角色
+        rule: '' // 当前审批人角色
       }
     }
   },
@@ -119,7 +119,6 @@ export default {
     }
   },
   created () {
-    console.log(this.$route.params)
     this._getApprovalInfo(this.$route.params.fid)
   },
   mounted () {
@@ -151,42 +150,51 @@ export default {
             this.approval.oneContent = res.message.one.content || '' // 当前生僻内容
             this.approval.rname = res.message.rname || '' // 单前审批人
             this.approval.content = res.message.content || '' // 提交内容
-            this.approval.rule = res.message.process[0].nodeArray.split('-')[1]
-            // get fid
+            this.approval.rule = res.message.process[0].nodeArray.split('-')[parseInt(res.message.position)]
             this.fId = res.message.id || '' // finail id
-            this.state = res.message.state
-            if (sessionStorage.rname && res.message.process[0]) {
-              // debugger
-              if (sessionStorage.rname === res.message.process[0].start) {
-                this.btnValue = '审核中···'
-                this.showSelect = null
-                this.lastApproval = 2
-                console.log('检测到是发起人')
-              }
-            }
-            if (res.message.position) {
-              if (parseInt(res.message.position) === 1) {
-                // 影藏提交人
-                this.ifSubname = 0
-              }
-            }
-            if (parseInt(this.state) === 1 || parseInt(this.state) === 2) {
-              // debugger
-              // state 1 2  不能操作
-              console.log('不可以操作')
+            this.state = res.message.state // state0
+            // 状态检测
+            if (parseInt(this.state) === 1) {
+              // state 1 通过  不能操作
+              console.log('1 => 不可以操作')
               // 选择审批人 不可操作
               this.isActive0 = parseInt(this.state)
               this.showSelect = null
               this.isActive = null
-              this.btnValue = '已审批，已操作'
+              this.btnValue = '已审批，通过'
+              if (sessionStorage.rname && res.message.process[0]) {
+              // debugger
+                if (sessionStorage.rname === res.message.process[0].start) {
+                  this.btnValue = '审核中···'
+                  this.showSelect = null
+                  this.lastApproval = 2
+                  console.log('检测到是发起人')
+                }
+              }
+              if (res.message.position) {
+                if (parseInt(res.message.position) === 1) {
+                  // 影藏提交人
+                  this.ifSubname = 0
+                }
+              }
               return false
+            } else if (parseInt(this.state) === 2) {
+              // 2 不通过 不能操作
+              console.log('1 => 不可以操作')
+              // 选择审批人 不可操作
+              this.isActive0 = parseInt(this.state)
+              this.showSelect = null
+              this.isActive = null
+              this.btnValue = '已审批，不通过'
+              return false
+            } else if (parseInt(this.state) === 3) {
+              // 3 回滚 可以操作
+              this.isActive0 = parseInt(this.state)
+              // 检测发起人
             }
-            // get people
+            // 以下可以操作的状态 0 3
             // 最后一个审批人,没有选择审批
-            // debugger
-            console.log(parseInt(res.message.position) + 1)
-            console.log(res.message.process[0].nodeArray.split('-').length)
-            if (parseInt(res.message.position) + 1 === res.message.process[0].nodeArray.split('-').length) {
+            if (parseInt(res.message.process[0].nodeArray.split('-').indexOf(sessionStorage.rname)) + 1 === res.message.process[0].nodeArray.split('-').length) {
               // this.lastApproval = 0
               this.nextReApproval = '没有下级审批人'
               if (this.content) {
@@ -194,7 +202,13 @@ export default {
               }
               return false
             } else {
-              var name = res.message.process[0].nodeArray.split('-')[parseInt(res.message.position) + 1]
+              // 发起人检测
+              var index = 0
+              var name = ''
+              if (res.message.process[0]) {
+                index = res.message.process[0].nodeArray.split('-').indexOf(sessionStorage.rname)
+                name = res.message.process[0].nodeArray.split('-')[parseInt(index) + 1]
+              }
               // 获取当前审批人
               api.getApprovalPeople(sessionStorage.id, sessionStorage.token, name)
                 .then(res => {
@@ -226,20 +240,6 @@ export default {
             setTimeout(function() {
               that.$router.push('/approval')
             }, 1000)
-          }
-        })
-        .catch(error => {
-          console.log(error)
-        })
-    },
-    _getProcessInfo(lid) {
-      api.getProcessInfo(sessionStorage.id, sessionStorage.token, lid)
-        .then(res => {
-          if (res.code === 200) {
-            this.approval.num = res.message.pid
-            this.approval.name = res.message.pname
-            this.approval.content = res.message.nodeArray
-            this.approval.suber = res.message.start
           }
         })
         .catch(error => {
