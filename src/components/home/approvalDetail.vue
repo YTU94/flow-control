@@ -1,5 +1,6 @@
 <template>
   <div class="approval-detail">
+    div.>ul.>(li.*3)
     <transition name="fade">
       <m-dialog :msg="toastMsg" btn="" v-show="success === 1"></m-dialog>
     </transition>
@@ -16,15 +17,8 @@
       <section class="select">
         <div class="form-group border-bottom">
           <label for="" class="f-label">材料：</label>
-          <i class="iconfont icon-xiangxia float-right" ref="icon0" @click="showSelect(0)"></i>
+          <i class="iconfont icon-xiangxia float-right" style="transform: rotate(-90deg)" ref="icon0" @click="showSelect(0)"></i>
           <input class="f-input" v-model="materialValue" type="text" readonly>          
-        </div>
-        <div class="select-content" v-show="select0 === 1">
-          <p class="border-bottom select-item" @click="selectMaterial(item.id, item.stuff_name)" v-for="item in material" :key="item.id">{{item.stuff_id}}    {{item.stuff_name}}</p>
-        </div>
-        <div class="form-group">
-          <label for="" class="f-label">数量：</label>
-          <input class="f-input" type="text" v-model="addFlow.num" placeholder="请输入" >
         </div>
       </section>
       <section class="msg">
@@ -101,19 +95,7 @@ export default {
   },
   methods: {
     showSelect(a) {
-      if (a === 0) {
-        this.select0 = this.select0 === 0 ? 1 : 0
-        this.$refs.icon0.className = this.select0 === 0 ? 'iconfont icon-xiangxia float-right' : 'iconfont icon-xiangshang float-right'
-      } else {
-        this.select1 = this.select1 === 0 ? 1 : 0
-        this.$refs.icon1.className = this.select1 === 0 ? 'iconfont icon-xiangxia float-right' : 'iconfont icon-xiangshang float-right'
-      }
-    },
-    // 选择值, 赋值
-    selectMaterial(id, val) {
-      this.addFlow.dataId = id
-      this.materialValue = val
-      this.select0 = 0
+      this.$router.push('/material')
     },
     // 获取材料
     _getMaterialList(uid, token) {

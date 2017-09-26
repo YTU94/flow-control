@@ -8,7 +8,7 @@
       <input type="text" class="s-input" placeholder="请输入" ref='search' @input="searchV()">
       <span class="s-cancel" @click="search = 0">取消</span>
     </div>
-    <tab v-show="search === 0"></tab>
+    <tab :hasUn="hasUn" v-show="search === 0"></tab>
     <router-view style="margin-bottom: 1.2rem"></router-view>
     <m-footer></m-footer>
   </div>
@@ -17,6 +17,7 @@
 <script>
 import MFooter from 'components/m-footer/m-footer'
 import Tab from 'components/tab/tab'
+import api from 'api/api'
 export default {
   components: {
     MFooter,
@@ -24,10 +25,12 @@ export default {
   },
   data () {
     return {
-      search: 0
+      search: 0,
+      hasUn: 0
     }
   },
   mounted () {
+    this._getApprovalListUn()
   },
   methods: {
     showSelect () {
@@ -36,9 +39,20 @@ export default {
       this.search = 1
       this.$router.push('/approval/approvalAll')
     },
+    // 获取未审批的流程
+    _getApprovalListUn() {
+      api.getApprovalList(sessionStorage.id, sessionStorage.token, 1)
+        .then(res => {
+          if (res.message.length > 0) {
+            this.hasUn = 1
+          }
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    },
     // 搜索工作
     searchV() {
-      // debugger
       var v = this.$refs.search.value
       console.log('item 组件', this.$children[1])
       for (let i = 0; i < this.$children.length; i++) {

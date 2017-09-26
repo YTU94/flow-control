@@ -13,6 +13,16 @@
           <div class="member-item" style="background: #6F9790" @click="page = 1"><i class="iconfont icon-jia"></i></div>
         </div>
       </div>
+      <div class="material-content border-top">
+        <p class="">选你材料显示内容</p>
+        <ul class="m-c-ul">
+          <li class="m-c-li"><i class="iconfont icon-yuanquan">  编号</i></li>
+          <li class="m-c-li"><i class="iconfont icon-yuanquan">  编号</i></li>
+          <li class="m-c-li"><i class="iconfont icon-yuanquan">  编号</i></li>
+          <li class="m-c-li"><i class="iconfont icon-yuanquan">  编号</i></li>
+          <li class="m-c-li"><i class="iconfont icon-yuanquan">  编号</i></li>
+        </ul>
+      </div>
     </div>
     <button class="btn" @click="_addApproval" :class="{disabledStyle: checkValue}" :disabled="checkValue">
       生成流程
@@ -215,6 +225,20 @@ export default {
             font-size .34rem
             align-items center
             justify-content center
+      .material-content
+        box-sizing border-box
+        padding .4rem
+        p
+          padding-bottom .4rem
+        .m-c-ul
+          display flex
+          flex-flow row wrap
+          align-content flex-start
+          .m-c-li
+            display flexbox
+            flex 0 0 33.3%
+            i
+              color $color-text-gray
     .btn
       float left
       margin-top .6rem

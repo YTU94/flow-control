@@ -8,32 +8,92 @@
     <div class="main-body">
       <!-- main body -->
       <div class="flow">
+        <span class="f-state">审批中|失败</span>
         <p class="f-content">编号：{{approval.rid}}</p>
         <p class="f-content">名称：{{approval.pname}}</p>
         <p class="f-content">审批流程：</p>
         <p class="f-content-s">{{approval.nodeArray}}</p>        
-        <p class="f-content">材料：</p>
-        <p class="f-content-s">{{approval.datasaveName}} X {{approval.datasaveNum}}</p>
+        <!-- <p class="f-content">材料：</p>
+        <p class="f-content-s">{{approval.datasaveName}} X {{approval.datasaveNum}}</p> -->
+      </div>
+      <div class="select margin-top-2" v-show="lastApproval === 1">
+        <div class="form-group border-bottom">
+          <label for="" class="f-label">材料：</label>
+          <i class="iconfont icon-xiangxia float-right"  @click="showSelect('selectM', $event)"></i>
+          <input type="text" class="f-input" v-model="nextReApproval" readonly>
+        </div>
+        <!-- 材料内容 -->
+        <div class="material-content" v-show="selectM === 1">
+          <ul class="m-m-ul">
+            <li class="m-item-li">
+              <p>材料1</p>
+              <div class="m-item">
+                <ul class="item-tabs">
+                  <li class="tabs-li">编号：1</li>
+                  <li class="tabs-li">编号：1</li>
+                  <li class="tabs-li">编号：1</li>
+                  <li class="tabs-li">编号：1</li>
+                  <li class="tabs-li">编号：1</li>
+                  <li class="tabs-li">编号：1</li>
+                  <li class="tabs-li">编号：1</li>
+                </ul>
+                <div class="m-item-footer border-top">
+                  <div class="m-item-f-num">
+                    <span class="f-num-label">数量:</span>
+                    <input type="text" class="f-num-input">
+                  </div>
+                  <div class="m-item-f-total">总价：<span class="f-total-num">21312</span></div>
+                </div>
+              </div>
+            </li>
+            <li class="m-item-li">
+              <p>材料1</p>
+              <div class="m-item">
+                <ul class="item-tabs">
+                  <li class="tabs-li">编号：1</li>
+                  <li class="tabs-li">编号：1</li>
+                  <li class="tabs-li">编号：1</li>
+                  <li class="tabs-li">编号：1</li>
+                  <li class="tabs-li">编号：1</li>
+                  <li class="tabs-li">编号：1</li>
+                  <li class="tabs-li">编号：1</li>
+                </ul>
+                <div class="m-item-footer border-top">
+                  <div class="m-item-f-num">
+                    <span class="f-num-label">数量:</span>
+                    <input type="text" class="f-num-input">
+                  </div>
+                  <div class="m-item-f-total">总价：<span class="f-total-num">21312</span></div>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
       </div>
       <div class="flow">
-        <p class="f-content">发起人：{{approval.startName}}</p>
-        <p class="f-content">审批内容：</p>
-        <p class="f-content-s">{{approval.oneContent}}</p>
-        <div class="" v-show="ifSubname === 1">
-          <p class="f-content">提出人：{{approval.subname}}</p>
-          <p class="f-content">提交意见：</p>
-          <p class="f-content-s">{{approval.content}}</p>
-        </div>     
-      </div>
-      <div class="flow" v-show="lastApproval === 1">
-        <p class="f-content">审批人：{{approval.rname}}</p>
-        <p class="f-content">审批意见：</p>
-        <p class="f-content-s">
-          <input type="text" class="f-content-i" v-model="content" placeholder="请输入审批内容">
+        <p class="f-content">流程进度：{{approval.startName}}</p>
+        <div class="for-border">
+          <div class="f-dot"><i class="iconfont icon-yuanshixin"></i></div>
+          <div class="f-border"></div>
+          <p class="f-content f-c-padding-l">会计小王 <span class="l-state">发起申请</span></p>
+          <p class="f-content-s f-c-padding-l">asdasdasdasdsadasdasdasddddddddddddddddddddddddddddddddddddddddddd</p>
+        </div>
+        <!--  审批人 -->
+        <p class="f-content">
+          <i class="iconfont icon-yuanshixin icon-c-end"></i> 水电施工员 <span class="l-state color-yellow">审批中</span>
         </p>
       </div>
+      <div class="flow margin-top-2" v-show="lastApproval === 1">
+        <!-- <p class="f-content">审批人：{{approval.rname}}</p> -->
+        <p class="f-content">审批意见：</p>
+        <p class="f-content-s">
+          <textarea class="f-content-i" name="" id="" cols="30" rows="3" placeholder="请输入审批意见"></textarea>
+          <!-- <input type="text" class="f-content-i" v-model="content" placeholder="请输入审批内容"> -->
+        </p>
+      </div>
+
       <!-- 审核状态 -->
-      <div class="state" v-show="lastApproval === 1">
+      <div class="state border-top" v-show="lastApproval === 1">
         审批状态：
         <span class="state-item">
           <i @click="isActive(1)" ref="iconState0" class="iconfont icon-yuanquan" v-bind:class="{ 'icon-xuanzhong': isActive0 === 1 }"></i>    通过
@@ -41,15 +101,15 @@
         <span class="state-item">
           <i @click="isActive(2)" ref="iconState1" class="iconfont icon-yuanquan" v-bind:class="{ 'icon-xuanzhong': isActive0 === 2 }"></i>    不通过
         </span>
-        <span class="state-item">
+        <!-- <span class="state-item">
           <i @click="isActive(3)" ref="iconState2" class="iconfont icon-yuanquan" v-bind:class="{ 'icon-xuanzhong': isActive0 === 3 }"></i>    回滚
-        </span>
+        </span> -->
       </div>
       <!-- 添加审批人 -->
-      <div class="select" v-show="lastApproval === 1">
+      <div class="select border-top" v-show="lastApproval === 1">
         <div class="form-group border-bottom">
           <label for="" class="f-label">审批人：</label>
-          <i class="iconfont icon-xiangxia float-right" ref="iconSelect" @click="showSelect()"></i>
+          <i class="iconfont icon-xiangxia float-right" ref="iconSelect" @click="showSelect('select', $event)"></i>
           <input type="text" class="f-input" v-model="nextReApproval" readonly>
         </div>
         <div class="select-content" v-show="select === 1">
@@ -82,6 +142,7 @@ export default {
       success: 0,
       dialog: 0,
       select: 0,
+      selectM: 0,
       ifSubname: 1,
       lastApproval: 1,
       isActive0: 1,
@@ -122,6 +183,7 @@ export default {
     this._getApprovalInfo(this.$route.params.fid)
   },
   mounted () {
+    console.log(this)
     if (sessionStorage.approvalTextMsg) {
       this.content = sessionStorage.approvalTextMsg
     }
@@ -130,9 +192,14 @@ export default {
     isActive(v) {
       this.isActive0 = parseInt(v)
     },
-    showSelect() {
-      this.select = this.select === 0 ? 1 : 0
-      this.$refs.iconSelect.className = this.select === 0 ? 'iconfont icon-xiangxia float-right' : 'iconfont icon-xiangshang float-right'
+    showSelect(a, e) {
+      let c = 0
+      if (a === 'select') {
+        c = this.select = this.select === 0 ? 1 : 0
+      } else {
+        c = this.selectM = this.selectM === 0 ? 1 : 0
+      }
+      e.target.className = c === 0 ? 'iconfont icon-xiangxia float-right' : 'iconfont icon-xiangshang float-right'
     },
     // 获取审批详情
     _getApprovalInfo(fid) {
@@ -252,6 +319,12 @@ export default {
 
 <style lang="stylus" scoped>
   @import '~common/stylus/variable'
+  .margin-top-2
+    margin-top .2rem
+  .color-yellow
+    color rgb(250, 180, 88)
+  .icon-yuanshixin
+    font-size 10px  
   .lookApproval
     float left
     width 100%
@@ -262,24 +335,70 @@ export default {
       width 100%
       margin-top 1.6rem
       .flow
+        position relative
         float left
         width 100%
-        margin-bottom .2rem
         box-sizing border-box
         padding .4rem
         background #fff
         font-size $font-size-medium
         text-align left
         color $color-text-d
+        overflow hidden
+        .f-state
+          position absolute
+          right -.9rem
+          top .35
+          //  审批中
+          // background rgb(250, 180, 88)
+          // 审批失败
+          background rgb(200, 86, 86)
+          color #fff
+          transform rotate(45deg)
+          padding .1rem 0
+          width 3rem
+          text-align center
+          font-size $font-size-small
         .f-content
           line-height 1.6
+          .icon-c-end
+            color rgb(111, 151, 144)
+            padding: 1px
+            background: rgb(197,213,211)
+            border-radius: 8px
         .f-content-s
           line-height 1.6
           color $color-text-gray
           font-size $font-size-small
+          word-break break-word
           .f-content-i
             width 100%
             border none
+        // add 流程的进度样式 
+        .for-border
+          position relative
+          box-sizing border-box
+          padding-bottom .2rem
+          .f-dot
+            position absolute
+            top 2px
+            left 0
+            color rgb(173, 185, 186)
+            z-index 2
+          .f-border
+            border-left 1px dotted #eee
+            position absolute
+            top 4px
+            left 5.75px
+            height 100%
+            box-sizing border-box
+            font-size 10px
+            color $color-text-a
+            z-index 1
+          .l-state
+            color $color-btn
+          .f-c-padding-l
+            padding-left .4rem       
       .state
         width 100%
         float left
@@ -303,7 +422,6 @@ export default {
         background #fff
         box-sizing border-box
         font-size $font-size-medium
-        margin-top .2rem
         width 100%
         text-align left
         .form-group
@@ -319,13 +437,58 @@ export default {
             line-height 1.2rem
             padding-right .2rem
           .f-span-msg
-            float right  
+            float right 
         .select-content
           background #E9F0EF
           padding .2rem .4rem
           .select-item
             color $color-text-a
             padding .2rem 0
+        // add later
+        .material-content
+          position relative
+          background $color-background
+          padding-bottom .3rem
+          .m-m-ul
+            .m-item-li
+              text-align left
+              color $color-text-gray
+              width 100%
+              box-sizing border-box
+              p
+                color $color-text-d
+                padding-left .4rem
+              .m-item
+                box-sizing border-box
+                padding .2rem .4rem
+                position relative
+                background rgb(245, 245, 245)
+                .item-tabs
+                  display flex
+                  flex-flow row wrap
+                  .tabs-li
+                    flex 0 0 33.3%  
+                .m-item-footer
+                  box-sizing border-box
+                  border-top 1px dotted #EFEFE0
+                  padding .1rem .0rem
+                  .m-item-f-num
+                    position relative
+                    display inline
+                    .f-num-label
+                      padding-left .0rem
+                    .f-num-input
+                      width 2rem
+                      border none
+                      outline none
+                      text-align right
+                      background rgb(245, 245, 245)
+                      color $color-text-a
+                  .m-item-f-total
+                    display inline
+                    float right 
+                    .f-total-num
+                      color  $color-text-a
     .btn
       float left
       margin-top .7rem

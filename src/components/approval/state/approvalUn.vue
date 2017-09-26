@@ -9,7 +9,7 @@
         <span class="state" v-else>item.process[0]为空</span>
       </p>
       <div class="content">
-        <p class="name">{{item.panme}}</p>
+        <p class="name">{{item.pname}}</p>
         <p class="flow" v-if="item.process[0]">{{item.process[0].nodeArray}}</p>
       </div>
       <div class="tabs">

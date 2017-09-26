@@ -38,7 +38,7 @@ export default {
     return {
       dialog: 0,
       // user
-      userName: '丹 ',
+      userName: '吕',
       password: '123456',
       company: '美的'
     }

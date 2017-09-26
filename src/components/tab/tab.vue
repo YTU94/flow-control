@@ -1,7 +1,8 @@
 <template>
   <div class="tab">
     <router-link class="tab-item" tag="div" to="/approval/approvalUn">
-      <span class="item">未审批</span>
+      <span class="item" style="position:relative">未审批<i v-show="hasUn" class="iconfont icon-yuanshixin" style="font-size:10px;
+      color:red;position:absolute;top:-5px; right:-5px;"></i></span>
     </router-link>
     <router-link class="tab-item" tag="div" to="/approval/approvalAlready">
       <span class="item">已发起</span>
@@ -17,6 +18,9 @@
 
 <script>
 export default {
+  props: [
+    'hasUn'
+  ]
 }
 </script>
 

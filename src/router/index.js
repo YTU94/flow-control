@@ -20,6 +20,7 @@ import memberUpdate from '@/components/personnel/memberUpdate'
 import materialManage from '@/components/personnel/materialManage'
 import materialAdd from '@/components/personnel/materialAdd'
 import materialUpdate from '@/components/personnel/materialUpdate'
+import material from '@/components/material/material'
 Vue.use(Router)
 
 export default new Router({
@@ -118,6 +119,11 @@ export default new Router({
       path: '/addFlow',
       name: 'addFlow',
       component: addFlow
+    },
+    {
+      path: '/material',
+      name: 'material',
+      component: material
     }
   ]
 })
