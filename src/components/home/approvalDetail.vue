@@ -10,15 +10,13 @@
         <p class="c-title">编号: {{pid}}</p>
         <p class="c-title">名称: {{name}}</p>
         <p class="c-title">审批流程: </p>
-        <p class="c-title-s">
-          {{nodeArray}}
-        </p>
+        <p class="c-title-s" >{{nodeArray}}</p>
       </section>
       <section class="select">
         <div class="form-group border-bottom">
           <label for="" class="f-label">材料：</label>
           <i class="iconfont icon-xiangxia float-right" style="transform: rotate(-90deg)" ref="icon0" @click="showSelect(0)"></i>
-          <input class="f-input" v-model="materialValue" type="text" readonly>          
+          <input class="f-input" v-model="materialValue" type="text" readonly placeholder="去选择">          
         </div>
       </section>
       <section class="msg">
@@ -61,6 +59,8 @@ export default {
       approvalPeople: [], // 下级审批人员
       materialValue: '',
       contentValue: '',
+      name: '',
+      nodeArray: '',
       addFlow: {
         proId: '', // 流程ID int
         dataId: '', // 材料ID int
@@ -81,9 +81,12 @@ export default {
   },
   created () {
     console.log(this.$route.params)
-    // 首页路由传过来 流程的参数
-    this.pid = this.$route.params.pid
-    this.name = this.$route.params.nodeArray.split('-')[1] || ''
+    // 首页路由传过来 流程的参数 没有编号pid 把id值当编号 *暂时*
+    this.pid = this.$route.params.id
+    // this.name = this.$route.params.nodeArray.split('-')[1] || ''
+    // 刷新后 this.$route.params 是空的 所有会提示split()方法有错
+    this.name = this.$route.params.nodeArray || ''
+    this.name = this.name.split('-')[1]
     this.nodeArray = this.$route.params.nodeArray
     // this.start = this.$route.params.start
     // 初始化获取材料和审批人
@@ -95,9 +98,13 @@ export default {
   },
   methods: {
     showSelect(a) {
-      this.$router.push('/material')
+      if (parseInt(a) === 1) {
+        this.select1 = 1
+      } else {
+        this.$router.push({name: 'material', params: {id: this.pid}})
+      }
     },
-    // 获取材料
+    // 获取材料 ->要改的
     _getMaterialList(uid, token) {
       api.getMaterialList(uid, token)
         .then(res => {

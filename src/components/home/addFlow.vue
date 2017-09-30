@@ -16,11 +16,15 @@
       <div class="material-content border-top">
         <p class="">选你材料显示内容</p>
         <ul class="m-c-ul">
-          <li class="m-c-li"><i class="iconfont icon-yuanquan">  编号</i></li>
-          <li class="m-c-li"><i class="iconfont icon-yuanquan">  编号</i></li>
-          <li class="m-c-li"><i class="iconfont icon-yuanquan">  编号</i></li>
-          <li class="m-c-li"><i class="iconfont icon-yuanquan">  编号</i></li>
-          <li class="m-c-li"><i class="iconfont icon-yuanquan">  编号</i></li>
+          <li class="m-c-li"><i class="iconfont icon-yuanquan" @click="addtabs('cId', $event)">  编号</i></li>
+          <li class="m-c-li"><i class="iconfont icon-yuanquan" @click="addtabs('cName', $event)">  名称</i></li>
+          <li class="m-c-li"><i class="iconfont icon-yuanquan" @click="addtabs('cSize', $event)">  规格尺寸</i></li>
+          <li class="m-c-li"><i class="iconfont icon-yuanquan" @click="addtabs('cSupplier', $event)">  供应商</i></li>
+          <li class="m-c-li"><i class="iconfont icon-yuanquan" @click="addtabs('cUnit', $event)">  单位</i></li>
+          <li class="m-c-li"><i class="iconfont icon-yuanquan" @click="addtabs('cNum', $event)">  数量</i></li>
+          <li class="m-c-li"><i class="iconfont icon-yuanquan" @click="addtabs('cPrice', $event)">  单价</i></li>
+          <li class="m-c-li"><i class="iconfont icon-yuanquan" @click="addtabs('cTotal', $event)">  总价</i></li>
+          <li class="m-c-li"><i class="iconfont icon-yuanquan" @click="addtabs('cContent', $event)">  备注</i></li>
         </ul>
       </div>
     </div>
@@ -63,7 +67,17 @@ export default {
       // 添加流程数据
       name: '',
       list: '',
-      start: ''
+      start: '',
+      // 添加材料的内容选项
+      cId: 0,
+      cName: 0,
+      cSize: 0,
+      cSupplier: 0,
+      cUnit: 0,
+      cPrice: 0,
+      cNum: 0,
+      cTotal: 0,
+      cContent: 0
     }
   },
   computed: {
@@ -126,7 +140,7 @@ export default {
     _addApproval() {
       this.list = this.selectArray.join('-')
       this.start = this.selectArray[0]
-      api.addProcess(sessionStorage.id, sessionStorage.token, this.name, this.list, this.start)
+      api.addProcess(sessionStorage.id, sessionStorage.token, this.name, this.list, this.start, this.cId, this.cName, this.cSize, this.cSupplier, this.cUnit, this.cPrice, this.cNum, this.cTotal, this.cContent)
         .then(res => {
           if (res.code === 200) {
             console.log(res)
@@ -140,6 +154,16 @@ export default {
         .catch(error => {
           console.log(error)
         })
+    },
+    // 添加材料内容项
+    addtabs(value, e) {
+      if (e.target.className.indexOf('yuanquan') > 0) {
+        this.$set(this.$data, value, 1)
+        e.target.className = 'iconfont icon-xuanzhong'
+      } else {
+        this.$set(this.$data, value, 0)
+        e.target.className = 'iconfont icon-yuanquan'
+      }
     }
   }
 }
@@ -237,6 +261,7 @@ export default {
           .m-c-li
             display flexbox
             flex 0 0 33.3%
+            line-height 1.6
             i
               color $color-text-gray
     .btn

@@ -70,13 +70,44 @@ export default {
   moneyApproval (uid, token, content, rname, fId, state) {
     return fetch('/web/index.php?r=api%2Fapproval', {uid: uid, token: token, content: content, rname: rname, f_id: fId, state: state})
   },
-  // 添加审核流程
-  addProcess (uid, token, name, list, start) {
-    return fetch('/web/index.php?r=api%2Faddprocess', {uid: uid, token: token, name: name, list: list, start: start})
+  // 添加审核流程 *更改_吕
+  addProcess (uid, token, name, list, start, isId, isName, isSize, isSuppiler, isUnit, isPrice, isNum, isTotal, isContent) {
+    return fetch('/web/index.php?r=api%2Faddprocess', {
+      uid: uid,
+      token: token,
+      name: name,
+      list: list,
+      start: start,
+      is_id: isId,
+      is_name: isName,
+      is_size: isSize,
+      is_supplier: isSuppiler,
+      is_unit: isUnit,
+      is_price: isPrice,
+      is_num: isNum,
+      is_total: isTotal,
+      is_content: isContent
+    })
   },
   // 获取材料列表
   getMaterialList (uid, token) {
     return fetch('/web/index.php?r=api%2Fgetscience', {uid: uid, token: token})
+  },
+  // 获取一级材料getscience
+  getScience (uid, token) {
+    return fetch('/web/index.php?r=api%2Fgetscience', {uid: uid, token: token})
+  },
+  // 获取二级材料
+  getTwoScience (uid, token, parentId) {
+    return fetch('/web/index.php?r=api%2Fgettwoscience', {uid: uid, token: token, parent_id: parentId})
+  },
+  // 获取三级材料
+  getThreeScience (uid, token, parentId) {
+    return fetch('/web/index.php?r=api%2Fgetthreescience', {uid: uid, token: token, parent_id: parentId})
+  },
+  // 获取四级材料
+  getFourScience (uid, token, parentId) {
+    return fetch('/web/index.php?r=api%2Fgetfourscience', {uid: uid, token: token, parent_id: parentId})
   },
   // 获取审批人
   getApprovalPeople (uid, token, name) {
@@ -145,5 +176,13 @@ export default {
   // 删除材料
   deleteMaterial(uid, token, id) {
     return fetch('/web/index.php?r=api%2Fdelstuff', {uid: uid, token: token, s_id: id})
+  },
+  // 材料搜索
+  stuffSearch(uid, token, keyword) {
+    return fetch('/web/index.php?r=api%2Fstuffsearch', {uid: uid, token: token, keyword: keyword})
+  },
+  // 获取材料显示属性
+  getStuffAtt(uid, token, pid) {
+    return fetch('/web/index.php?r=api%2Fgetstuffatt', {uid: uid, token: token, pid: pid})
   }
 }

@@ -1,59 +1,38 @@
 <template>
   <!-- 已选材料 -->
-  <div class="material-m" v-if="page===0">
+<div>
+  <div class="material-m" v-show="page===0">
     <div class="header border-bottom header-bg">
       <router-link  class="h-back" to='/approvalDetail'>
         <i class="iconfont icon-xiangzuo"></i>返回
       </router-link>
-      已选（5）
+      已选（{{this.materialC.length}}）
       <span class="right">确定</span>
     </div>
     <div class="m-m-content">
       <ul class="m-m-ul">
-        <li class="m-item-li">
+        <li class="m-item-li" v-for="(item, index) in materialC" >
           <p>材料1</p>
           <div class="m-item-s">
             <div class="m-item">
               <ul class="item-tabs">
-                <li class="tabs-li">编号：111111111111111111111111111111111</li>
-                <li class="tabs-li">编号：1</li>
-                <li class="tabs-li">编号：1</li>
-                <li class="tabs-li">编号：1</li>
-                <li class="tabs-li">编号：1</li>
-                <li class="tabs-li">编号：1</li>
-                <li class="tabs-li">编号：1</li>
+                <li class="tabs-li" v-show="cId === 1">编号:{{item.stuff_id}}</li>
+                <li class="tabs-li" v-show="cName === 1">名称:{{item.stuff_name}}</li>
+                <li class="tabs-li" v-show="cSize === 1">型号:{{item.stuff_size}}</li>
+                <li class="tabs-li" v-show="cSupplier === 1">供应商:{{item.stuff_supplier}}</li>
+                <li class="tabs-li" v-show="cUnit === 1">单位:{{item.stuff_unit}}</li>
+                <li class="tabs-li" v-show="cPrice === 1">单价:{{item.stuff_price}}</li>
+                <li class="tabs-li" v-show="cContent === 1">备注:{{item.content}}</li>
               </ul>
               <div class="m-item-footer border-top">
-                <div class="m-item-f-num">
+                <div class="m-item-f-num" v-show="cNum === 1">
                   <span class="f-num-label">数量:</span>
-                  <input type="text" class="f-num-input">
+                  <input type="text" class="f-num-input" v-on:input="addNum(index, item.stuff_price, $event)">
                 </div>
-                <div class="m-item-f-total">总价：<span class="f-total-num">21312</span></div>
+                <div class="m-item-f-total" v-show="cContent === 1">总价：<span class="f-total-num"></span></div>
               </div>
             </div>
-            <div class="m-item-del">删除</div>
-          </div>
-        </li>
-        <li class="m-item-li">
-          <p>材料1</p>
-          <div class="m-item-s">
-            <div class="m-item">
-              <ul class="item-tabs">
-                <li class="tabs-li">编号：1</li>
-                <li class="tabs-li">编号：1</li>
-                <li class="tabs-li">编号：1</li>
-                <li class="tabs-li">编号：1</li>
-                <li class="tabs-li">编号：1</li>
-              </ul>
-              <div class="m-item-footer border-top">
-                <div class="m-item-f-num">
-                  <span class="f-num-label">数量:</span>
-                  <input type="text" class="f-num-input">
-                </div>
-                <div class="m-item-f-total">总价：21312</div>
-              </div>
-            </div>
-            <div class="m-item-del">删除</div>
+            <div class="m-item-del" @click="delMaterialC(index, $event)">删除</div>
           </div>
         </li>
       </ul>
@@ -61,11 +40,11 @@
     <div class="btn" @click="page = 1"><i class="iconfont icon-jia">  继续添加</i></div>
   </div>
   <!-- 选择材料 -->
-  <div class="material-choose" v-else>
+  <div class="material-choose" v-if="page === 1">
     <div class="header" style="background:#9eb1a; color:#fff!important; z-index:1002;">
       <i class="iconfont icon-xiangzuo h-back" style="color:#fff!important;" @click="page = 0">放回</i>
       选择材料
-      <span class="right">已选（5）</span>
+      <span class="right">已选（{{this.materialC.length}}）</span>
     </div>
     <div class="search" v-show="materialSelect === 0">
       <i class="iconfont icon-sousuo s-icon" ></i>
@@ -74,71 +53,254 @@
     <div class="top-tab">
       <div class="tab">
         <ul class="tab-ul">
-          <li class="tab-item" @click="materialSelect = 1">主料<i class="iconfont icon-xiangxia1"></i></li>
-          <li class="tab-item">辅料<i class="iconfont icon-xiangxia1"></i></li>
-          <li class="tab-item">三级<i class="iconfont icon-xiangxia1"></i></li>
+          <li class="tab-item" @click="getScience()">{{materialOneV}}<i class="iconfont icon-xiangxia1"></i></li>
+          <li class="tab-item" @click="getTwoScience(materialOneId)">{{materialTwoV}}<i class="iconfont icon-xiangxia1"></i></li>
+          <li class="tab-item" @click="getThreeScience()">{{materialThreeV}}<i class="iconfont icon-xiangxia1"></i></li>
         </ul>
       </div>
       <div class="tab-content border-top" v-show="materialSelect===1">
         <ul class="">
-          <li class="li">主料</li>
-          <li class="li">辅料</li>
-          <li class="li">次料</li>
+          <li class="li" @click="materialChoose(item.level_id, item.name)" v-for="item in materialOne" :key="item.index">{{item.name}}</li>
         </ul>
       </div>
     </div>
     <div class="m-c-content">
-      <div class="content-item">
+      <div class="content-item" v-for="item in materialFour" :key="item.index">
         <ul class="item-tabs">
-          <li class="tabs-li">编号:1</li>
-          <li class="tabs-li">编号:1</li>
-          <li class="tabs-li">编号:1</li>
-          <li class="tabs-li">编号:1</li>
-          <li class="tabs-li">编号:1</li>
-          <li class="tabs-li">编号:1</li>
-          <li class="tabs-li">编号:1</li>
+          <li class="tabs-li">编号:{{item.stuff_id}}</li>
+          <li class="tabs-li">名称:{{item.stuff_name}}</li>
+          <li class="tabs-li">型号:{{item.stuff_size}}</li>
+          <li class="tabs-li">供应商:{{item.stuff_supplier}}</li>
+          <li class="tabs-li">单位:{{item.stuff_unit}}</li>
+          <li class="tabs-li">单价:{{item.stuff_price}}</li>
         </ul>
-        <p class="item-text">备注：1111111111111111111111111</p>
-        <p class="item-text">11111111111111111111</p>
-        <i class="iconfont icon-jia item-add"></i>
-      </div>
-      <div class="content-item">
-        <ul class="item-tabs">
-          <li class="tabs-li">编号:1</li>
-          <li class="tabs-li">编号:1</li>
-          <li class="tabs-li">编号:1</li>
-          <li class="tabs-li">编号:1</li>
-          <li class="tabs-li">编号:1</li>
-          <li class="tabs-li">编号:1</li>
-          <li class="tabs-li">编号:1</li>
-        </ul>
-        <p class="item-text">备注：1111111111111111111111111</p>
-        <p class="item-text">11111111111111111111</p>
-        <i class="iconfont icon-jia item-add"></i>
+        <p class="item-text">备注：{{item.content}}</p>
+        <i class="iconfont icon-jia item-add" @click="mChoose(item, $event)"></i>
       </div>
     </div>
     <div class="model" v-show="materialSelect === 1"></div>
   </div>
+</div>  
 </template>
 
 <script>
+import api from 'api/api'
 export default {
   data () {
     return {
       // page 参数
       page: 0,
-      materialSelect: 0
+      materialSelect: 0,
+      materialOneV: '' || '主料',
+      materialOneId: '',
+      materialTwoV: '' || '辅料',
+      materialTwoId: '',
+      materialThreeV: '' || '三级',
+      materialThreeVId: '',
+      materialCB: [],
+      materialC: [], // 选好的材料
+      pid: '', // 流程id
+      // 材料
+      level: 0,
+      materialOne: [],
+      // materialTwo: [],
+      // materialThree: [],
+      materialFour: [],
+      // 添加材料的内容选项
+      cId: 1,
+      cName: 1,
+      cSize: 1,
+      cSupplier: 1,
+      cUnit: 1,
+      cPrice: 1,
+      cNum: 1,
+      cTotal: 1,
+      cContent: 1
     }
   },
+  watch: {
+    materialC: {
+      handler() { // 选返回的材料
+        var arr = []
+        var that = this
+        setTimeout(function() {
+          if (!this.page) {
+            that.touch()
+          }
+        }, 1000)
+        if (this.materialC) {
+          for (let i = 0; i < this.materialC.length; i++) {
+            arr.splice(i, 0, [this.materialC[i].id, this.materialC[i].materialNum])
+          }
+        }
+        this.materialCB = arr
+      },
+      deep: true
+    }
+  },
+  created () {
+    // 初始化，渲染第一个值
+  },
   mounted() {
-    var that = this
-    setTimeout(function() {
-      if (!this.page) {
-        that.touch()
-      }
-    }, 1000)
+    console.log('materialCB', this.materialCB)
+    this.pid = this.$route.params.id
+    // this._getStuffAtt(this.pid)
   },
   methods: {
+    // 选择主料
+    getScience() {
+      this.materialSelect = this.materialSelect === 1 ? 0 : 1
+      this._getScience()
+    },
+    getTwoScience(id) {
+      this.materialSelect = this.materialSelect === 1 ? 0 : 1
+      this._getTwoScience(id)
+    },
+    getThreeScience(id) {
+      this.materialSelect = this.materialSelect === 1 ? 0 : 1
+      this._getThreeScience(id)
+    },
+    // paicker 选择
+    materialChoose(id, name) {
+      console.log(id)
+      // 收起picker
+      if (this.level === 1) {
+        this.materialOneV = name
+        this.materialOneId = id
+        this._getTwoScience(id)
+        this.materialSelect = 0
+      } else if (this.level === 2) {
+        this.materialTwoV = name
+        this.materialTwoId = id
+        this.materialSelect = 0
+        this._getThreeScience(id)
+      } else if (this.level === 3) {
+        this.materialThreeV = name
+        this._getFourScience(id)
+        this.materialSelect = 0
+      } else {
+        console.log('报错')
+      }
+    },
+    // material choose to edit
+    mChoose(item, e) {
+      if (e.target.className.indexOf('icon-jia') > 0) {
+        // 添加数量字段
+        item.materialNum = 0
+        item.materialTotal = 0
+        e.target.className = 'iconfont icon-yuanquan item-add'
+        this.materialC.push(item)
+        console.log('materialC', this.materialC)
+      } else {
+        e.target.className = 'iconfont icon-jia item-add'
+        // this.materialC.push(item)
+        console.log('materialC', this.materialC)
+      }
+    },
+    // 搜罗
+    searchV () {
+      console.log(this)
+      this._stuffSearch(this.$refs.search.value)
+    },
+    // del
+    delMaterialC(i, e) {
+      // console.log(e.target.parentNode.parentNode)
+      // e.target.parentNode.parentNode.className = 'm-item-li vnone'
+      this.materialC.splice(i, 1)
+      console.log('2222')
+      console.log(this.materialC)
+    },
+    addNum (i, p, e) {
+      var t = e.target.value
+      this.materialC[parseInt(i)].materialNum = t
+      this.materialC[parseInt(i)].materialTotal = t * p
+      this.materialCB[parseInt(i)][1] = t
+      e.target.parentNode.nextElementSibling.children[0].innerHTML = t * p
+      console.log(this.materialCB)
+    },
+    _getScience() {
+      api.getScience(sessionStorage.id, sessionStorage.token)
+        .then(res => {
+          if (res.code === 200) {
+            console.log(res)
+            this.materialOne = res.message
+            this.level = 1
+          }
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    },
+    _getTwoScience(id) {
+      api.getTwoScience(sessionStorage.id, sessionStorage.token, id)
+        .then(res => {
+          if (res.code === 200) {
+            console.log(res)
+            this.materialOne = res.message
+            this.level = 2
+          }
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    },
+    _getThreeScience(id) {
+      api.getThreeScience(sessionStorage.id, sessionStorage.token, id)
+        .then(res => {
+          if (res.code === 200) {
+            console.log(res)
+            this.materialOne = res.message
+            this.level = 3
+          }
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    },
+    _getFourScience(id) {
+      api.getFourScience(sessionStorage.id, sessionStorage.token, id)
+        .then(res => {
+          if (res.code === 200) {
+            console.log(res)
+            this.materialFour = res.message
+          }
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    },
+    _stuffSearch(keyword) {
+      api.stuffSearch(sessionStorage.id, sessionStorage.token, keyword)
+        .then(res => {
+          if (res.code === 200) {
+            console.log(res)
+            this.materialFour = res.message
+          }
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    },
+    _getStuffAtt(pid) {
+      api.getStuffAtt(sessionStorage.id, sessionStorage.token, pid)
+        .then(res => {
+          if (res.code === 200) {
+            console.log(res)
+            this.cId = res.message[0].is_id
+            this.cName = res.message[0].is_name
+            this.cSize = res.message[0].is_sizec
+            this.cSupplier = res.message[0].is_supplier
+            this.cUnit = res.message[0].is_unitc
+            this.cPrice = res.message[0].is_pricec
+            this.cNum = res.message[0].is_num
+            this.cTotal = res.message[0].is_total
+            this.cContent = res.message[0].is_content
+          }
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    },
     touch() {
       var expansion = null
       var e = document.querySelectorAll('.m-m-ul .m-item-li .m-item-s')
@@ -184,11 +346,12 @@ export default {
 
 <style lang="stylus" scoped>
 @import '~common/stylus/variable'
+.vnone
+  display none
 .swipeleft 
     transform:translateX(-1.5rem)
 .material-choose, .material-m
   background $color-background
-  // padding-bottom .15rem
   .header-bg
     background #fff!important
   .header
