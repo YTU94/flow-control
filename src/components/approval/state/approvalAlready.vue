@@ -19,7 +19,7 @@
         <router-link tag="span" :to="{name: 'lookApproval', params: {fid: item.id, lid: item.lid}}">
           <span class="tabs-item">查&nbsp;&nbsp;&nbsp;&nbsp;看</span>          
         </router-link>
-        <span class="tabs-item tabs-item-d" @click="_deleteApproval(item.rid, item.id)">删&nbsp;&nbsp;&nbsp;&nbsp;除</span>
+        <span class="tabs-item tabs-item-d" @click="_deleteApproval(item.rid, item.id, $event)">删&nbsp;&nbsp;&nbsp;&nbsp;除</span>
       </div>
       <div class="line"></div>      
     </div>  
@@ -58,7 +58,7 @@ export default {
       })
   },
   methods: {
-    _deleteApproval(rid, fid) {
+    _deleteApproval(rid, fid, e) {
       api.deleteApproval(sessionStorage.id, sessionStorage.token, rid, fid)
         .then(res => {
           var that = this
@@ -67,6 +67,7 @@ export default {
             this.dialog = 1
             setTimeout(function() {
               that.dialog = 0
+              e.target.parentNode.parentNode.style.display = 'none'
             }, 1000)
           } else {
             this.message = res.message

@@ -8,123 +8,92 @@
     <div class="main-body">
       <!-- main body -->
       <div class="flow">
-        <span class="f-state">审批中|失败</span>
+        <span class="f-state" v-bind:class="{bgYellow: parseInt(state) !== 2}">{{parseInt(state) === 2 ? '失败' : '审批中'}}</span>
         <p class="f-content">编号：{{approval.rid}}</p>
         <p class="f-content">名称：{{approval.pname}}</p>
         <p class="f-content">审批流程：</p>
         <p class="f-content-s">{{approval.nodeArray}}</p>        
-        <!-- <p class="f-content">材料：</p>
-        <p class="f-content-s">{{approval.datasaveName}} X {{approval.datasaveNum}}</p> -->
       </div>
-      <div class="select margin-top-2" v-show="lastApproval === 1">
+      <div class="select margin-top-2">
         <div class="form-group border-bottom">
           <label for="" class="f-label">材料：</label>
           <i class="iconfont icon-xiangxia float-right"  @click="showSelect('selectM', $event)"></i>
-          <input type="text" class="f-input" v-model="nextReApproval" readonly>
+          <input type="text" class="f-input" v-model="materialInput" readonly>
         </div>
         <!-- 材料内容 -->
         <div class="material-content" v-show="selectM === 1">
           <ul class="m-m-ul">
-            <li class="m-item-li">
+            <li class="m-item-li" v-if="approval.datasave" v-for="(item, index) in approval.datasave">
               <p>材料1</p>
               <div class="m-item">
                 <ul class="item-tabs">
-                  <li class="tabs-li">编号：1</li>
-                  <li class="tabs-li">编号：1</li>
-                  <li class="tabs-li">编号：1</li>
-                  <li class="tabs-li">编号：1</li>
-                  <li class="tabs-li">编号：1</li>
-                  <li class="tabs-li">编号：1</li>
-                  <li class="tabs-li">编号：1</li>
+                  <li class="tabs-li" v-show="parseInt(material.id) === 1">编号：{{item.data_id}}</li>
+                  <li class="tabs-li" v-show="parseInt(material.name) === 1">名称：{{item.data_name}}</li>
+                  <li class="tabs-li" v-show="parseInt(material.size) === 1">型号：{{item.data_size}}</li>
+                  <li class="tabs-li" v-show="parseInt(material.supplier) === 1">供应商：{{item.data_supplier}}</li>
+                  <li class="tabs-li" v-show="parseInt(material.unit) === 1">单位：{{item.data_unit}}</li>
+                  <li class="tabs-li" v-show="parseInt(material.price) === 1">单价：{{item.data_price}}</li>
+                  <li class="tabs-li" v-show="parseInt(material.content) === 1">备注：{{item.data_content}}</li>
                 </ul>
                 <div class="m-item-footer border-top">
-                  <div class="m-item-f-num">
+                  <div class="m-item-f-num" v-show="parseInt(material.num) === 1">
                     <span class="f-num-label">数量:</span>
-                    <input type="text" class="f-num-input">
+                    <input type="text" class="f-num-input" value="123">
                   </div>
-                  <div class="m-item-f-total">总价：<span class="f-total-num">21312</span></div>
-                </div>
-              </div>
-            </li>
-            <li class="m-item-li">
-              <p>材料1</p>
-              <div class="m-item">
-                <ul class="item-tabs">
-                  <li class="tabs-li">编号：1</li>
-                  <li class="tabs-li">编号：1</li>
-                  <li class="tabs-li">编号：1</li>
-                  <li class="tabs-li">编号：1</li>
-                  <li class="tabs-li">编号：1</li>
-                  <li class="tabs-li">编号：1</li>
-                  <li class="tabs-li">编号：1</li>
-                </ul>
-                <div class="m-item-footer border-top">
-                  <div class="m-item-f-num">
-                    <span class="f-num-label">数量:</span>
-                    <input type="text" class="f-num-input">
-                  </div>
-                  <div class="m-item-f-total">总价：<span class="f-total-num">21312</span></div>
+                  <div class="m-item-f-total" v-show="parseInt(material.total) === 1">总价：<span class="f-total-num">21312</span></div>
                 </div>
               </div>
             </li>
           </ul>
         </div>
       </div>
+      <!--  流程进度 -->
       <div class="flow">
-        <p class="f-content">流程进度：{{approval.startName}}</p>
-        <div class="for-border">
+        <p class="f-content">流程进度：</p>
+        <div class="for-border" v-if="approval.all" v-for="(item, index) in approval.all" :key="index">
           <div class="f-dot"><i class="iconfont icon-yuanshixin"></i></div>
           <div class="f-border"></div>
-          <p class="f-content f-c-padding-l">会计小王 <span class="l-state">发起申请</span></p>
-          <p class="f-content-s f-c-padding-l">asdasdasdasdsadasdasdasddddddddddddddddddddddddddddddddddddddddddd</p>
+          <p class="f-content f-c-padding-l">{{item.zhiwei}} {{item.subname}} <span class="l-state">{{parseInt(index) === 0 ? '发起申请' : '通过'}}</span></p>
+          <p class="f-content-s f-c-padding-l">{{item.content}}</p>
         </div>
         <!--  审批人 -->
         <p class="f-content">
-          <i class="iconfont icon-yuanshixin icon-c-end"></i> 水电施工员 <span class="l-state color-yellow">审批中</span>
+          <i class="iconfont icon-yuanshixin icon-c-end"></i>{{approval.rule}} {{approval.rname}}<span class="l-state color-yellow">{{nowState}}</span>
         </p>
       </div>
-      <div class="flow margin-top-2" v-show="lastApproval === 1">
-        <!-- <p class="f-content">审批人：{{approval.rname}}</p> -->
-        <p class="f-content">审批意见：</p>
-        <p class="f-content-s">
-          <textarea class="f-content-i" name="" id="" cols="30" rows="3" placeholder="请输入审批意见"></textarea>
-          <!-- <input type="text" class="f-content-i" v-model="content" placeholder="请输入审批内容"> -->
-        </p>
-      </div>
-
-      <!-- 审核状态 -->
-      <div class="state border-top" v-show="lastApproval === 1">
-        审批状态：
-        <span class="state-item">
-          <i @click="isActive(1)" ref="iconState0" class="iconfont icon-yuanquan" v-bind:class="{ 'icon-xuanzhong': isActive0 === 1 }"></i>    通过
-        </span>
-        <span class="state-item">
-          <i @click="isActive(2)" ref="iconState1" class="iconfont icon-yuanquan" v-bind:class="{ 'icon-xuanzhong': isActive0 === 2 }"></i>    不通过
-        </span>
-        <!-- <span class="state-item">
-          <i @click="isActive(3)" ref="iconState2" class="iconfont icon-yuanquan" v-bind:class="{ 'icon-xuanzhong': isActive0 === 3 }"></i>    回滚
-        </span> -->
-      </div>
-      <!-- 添加审批人 -->
-      <div class="select border-top" v-show="lastApproval === 1">
-        <div class="form-group border-bottom">
-          <label for="" class="f-label">审批人：</label>
-          <i class="iconfont icon-xiangxia float-right" ref="iconSelect" @click="showSelect('select', $event)"></i>
-          <input type="text" class="f-input" v-model="nextReApproval" readonly>
+      <!--  审批意见 -->
+      <div v-show="lastApproval === 0">
+        <div class="flow margin-top-2">
+          <p class="f-content">审批意见：</p>
+          <p class="f-content-s">
+            <textarea class="f-content-i" name="" id="" cols="30" rows="3" v-model="content" placeholder="请输入审批意见"></textarea>
+            <!-- <input type="text" class="f-content-i"  placeholder="请输入审批内容"> -->
+          </p>
         </div>
-        <div class="select-content" v-show="select === 1">
-          <p class="border-bottom select-item" @click="nextReApproval = item.name, select = 0" v-for="item in memberList" :key="item.index">{{item.name | checkNull('姓名')}} | {{item.rname | checkNull('职位名称')}}</p>
+        <!-- 审核状态 -->
+        <div class="state border-top">
+          审批状态：
+          <span class="state-item">
+            <i @click="isActive(1)" ref="iconState0" class="iconfont icon-yuanquan" v-bind:class="{ 'icon-xuanzhong': isActive0 === 1 }"></i>    通过
+          </span>
+          <span class="state-item">
+            <i @click="isActive(2)" ref="iconState1" class="iconfont icon-yuanquan" v-bind:class="{ 'icon-xuanzhong': isActive0 === 2 }"></i>    不通过
+          </span>
         </div>
-      </div>
-      <!-- 审批状态——发起人可见 -->
-      <div class="select" v-show="lastApproval === 2">
-        <div class="form-group border-bottom">
-          <label for="" class="f-label">审批状态：</label>
-          <span class="f-span-msg">{{approval.rule}}--{{approval.rname}}  正在审批</span>
+        <!-- 添加审批人 -->
+        <div class="select border-top">
+          <div class="form-group border-bottom">
+            <label for="" class="f-label">审批人：</label>
+            <i class="iconfont icon-xiangxia float-right" ref="iconSelect" @click="showSelect('select', $event)"></i>
+            <input type="text" class="f-input" v-model="nextReApproval" readonly>
+          </div>
+          <div class="select-content" v-show="select === 1">
+            <p class="border-bottom select-item" @click="nextReApproval = item.name, select = 0" v-for="item in memberList" :key="item.index">{{item.name | checkNull('姓名')}} | {{item.rname | checkNull('职位名称')}}</p>
+          </div>
         </div>
+        <button class="btn" ref="btn" @click="_moneyApproval" :class="{disabledStyle: checkValue}" :disabled="checkValue">审批</button>        
       </div>
     </div>
-    <button class="btn" ref="btn" @click="_moneyApproval" :class="{disabledStyle: checkValue}" :disabled="checkValue">{{btnValue}}</button>  
   </div>
 </template>
 
@@ -144,29 +113,36 @@ export default {
       select: 0,
       selectM: 0,
       ifSubname: 1,
-      lastApproval: 1,
+      lastApproval: 0, // 1-> 不可操作， 0-> 可操作
       isActive0: 1,
       isActive1: 0,
-      isActive2: 0,
       memberList: [],
-      btnValue: '审批',
+      nowState: '审批中',
       fId: '', // 审批id
       nextReApproval: '', // 下级审批人
       content: '', // 当前审批内容,
       state: '', // 审批状态
       approval: {
+        all: [], // 所有记录
         state: '', // 状态
         rid: '', // 编号
         pname: '', // 名称
         nodeArray: '', // 流程
-        datasaveName: '', // 材料
-        datasaveNum: '', // 材料数量
-        startName: '', // 发起人
-        oneContent: '', // 审批内容
-        subname: '', // 提交人
-        content: '', // 提交内容
+        datasave: [], // 材料
         rname: '', // 单前审批人
         rule: '' // 当前审批人角色
+      },
+      materialInput: '',
+      material: {
+        id: 1,
+        name: 1,
+        num: 1,
+        price: 1,
+        size: 1,
+        supplier: 1,
+        total: 1,
+        unit: 1,
+        content: 1
       }
     }
   },
@@ -183,13 +159,12 @@ export default {
     this._getApprovalInfo(this.$route.params.fid)
   },
   mounted () {
-    console.log(this)
     if (sessionStorage.approvalTextMsg) {
       this.content = sessionStorage.approvalTextMsg
     }
   },
   methods: {
-    isActive(v) {
+    isActive (v) {
       this.isActive0 = parseInt(v)
     },
     showSelect(a, e) {
@@ -201,63 +176,64 @@ export default {
       }
       e.target.className = c === 0 ? 'iconfont icon-xiangxia float-right' : 'iconfont icon-xiangshang float-right'
     },
-    // 获取审批详情
+    // 获取审批详情 new->吕
     _getApprovalInfo(fid) {
       api.getApprovalInfo(sessionStorage.id, sessionStorage.token, fid)
         .then(res => {
           if (res.code === 200) {
-            this.approval = res.message || ''
-            this.approval.rid = res.message.rid || ''
-            this.approval.pname = res.message.process[0].pname || ''
-            this.approval.nodeArray = res.message.process[0].nodeArray || ''
-            this.approval.datasaveName = res.message.datasave.data_name || ''
-            this.approval.datasaveNum = res.message.datasave.data_number || ''
-            this.approval.startName = res.message.one.subname || '' // 发起人
-            this.approval.subname = res.message.subname || '' // 提交人
-            this.approval.oneContent = res.message.one.content || '' // 当前生僻内容
-            this.approval.rname = res.message.rname || '' // 单前审批人
-            this.approval.content = res.message.content || '' // 提交内容
-            this.approval.rule = res.message.process[0].nodeArray.split('-')[parseInt(res.message.position)]
-            this.fId = res.message.id || '' // finail id
+            let p = res.message.process[0]
             this.state = res.message.state // state0
+            this.approval.all = res.message.all
+            this.approval.rid = res.message.rid || ''
+            this.approval.pname = p.pname || ''
+            this.approval.nodeArray = p.nodeArray || ''
+            this.approval.datasave = res.message.datasave || '' // 材料
+            this.approval.rname = res.message.rname || '' // 单前审批人
+            this.approval.rule = p.nodeArray.split('-')[parseInt(res.message.position)] // 单前审批角色
+            this.fId = res.message.id || '' // finail id
+            // 材料显示state
+            this.material.id = p.is_id
+            this.material.name = p.is_name || 1
+            this.material.num = p.is_num || 1
+            this.material.price = p.is_price || 1
+            this.material.size = p.is_size || 1
+            this.material.supplier = p.is_supplier || 1
+            this.material.total = p.is_total || 1
+            this.material.unit = p.is_unit || 1
+            this.material.content = p.is_content || 1
+            // material input value
+            if (res.message.datasave.length < 3) {
+              console.log(res.message.datasave.length)
+              for (let i = 0; i < res.message.datasave.length; i++) {
+                this.materialInput += res.message.datasave[i].data_name + '，'
+              }
+              this.materialInput = this.materialInput.slice(0, this.materialInput.length - 1)
+            } else {
+              let v = res.message.datasave
+              this.materialInput = v[0].data_name + '，' + v[0].data_name + '，' + v[0].data_name + '等' + v.length + '种'
+            }
+            // 发起人检测
+            if (res.message.process[0]) {
+              if (res.message.process[0].nodeArray.split('-')[0] === sessionStorage.rname) {
+                console.log('检测到是发起人')
+                this.lastApproval = 1
+              }
+            }
             // 状态检测
             if (parseInt(this.state) === 1) {
               // state 1 通过  不能操作
+              this.lastApproval = 1
+              this.nowState = '通过'
               console.log('1 => 不可以操作')
-              // 选择审批人 不可操作
-              this.isActive0 = parseInt(this.state)
-              this.showSelect = null
-              this.isActive = null
-              this.btnValue = '已审批，通过'
-              if (sessionStorage.rname && res.message.process[0]) {
-              // debugger
-                if (sessionStorage.rname === res.message.process[0].start) {
-                  this.btnValue = '审核中···'
-                  this.showSelect = null
-                  this.lastApproval = 2
-                  console.log('检测到是发起人')
-                }
-              }
-              if (res.message.position) {
-                if (parseInt(res.message.position) === 1) {
-                  // 影藏提交人
-                  this.ifSubname = 0
-                }
-              }
               return false
             } else if (parseInt(this.state) === 2) {
               // 2 不通过 不能操作
-              console.log('1 => 不可以操作')
-              // 选择审批人 不可操作
-              this.isActive0 = parseInt(this.state)
-              this.showSelect = null
-              this.isActive = null
-              this.btnValue = '已审批，不通过'
-              return false
-            } else if (parseInt(this.state) === 3) {
-              // 3 回滚 可以操作
-              this.isActive0 = parseInt(this.state)
-              // 检测发起人
+              this.lastApproval = 1
+              this.nowState = '不通过'
+              console.log('2 => 不可以操作')
+            } else {
+              // 0 能操作
+              console.log('else => 可操作')
             }
             // 以下可以操作的状态 0 3
             // 最后一个审批人,没有选择审批
@@ -269,14 +245,13 @@ export default {
               }
               return false
             } else {
-              // 发起人检测
+              // 获取当前审批人
               var index = 0
               var name = ''
               if (res.message.process[0]) {
                 index = res.message.process[0].nodeArray.split('-').indexOf(sessionStorage.rname)
                 name = res.message.process[0].nodeArray.split('-')[parseInt(index) + 1]
               }
-              // 获取当前审批人
               api.getApprovalPeople(sessionStorage.id, sessionStorage.token, name)
                 .then(res => {
                   this.memberList = res.message || ''
@@ -297,7 +272,7 @@ export default {
       // 存入审批内容
       sessionStorage.approvalTextMsg = this.content
       // 审批状态
-      this.state = Math.max(this.isActive0, this.isActive1, this.isActive2)
+      this.state = Math.max(this.isActive0, this.isActive1)
       api.moneyApproval(sessionStorage.id, sessionStorage.token, this.content, this.nextReApproval, this.fId, this.state)
         .then(res => {
           if (res.code === 200) {
@@ -319,6 +294,8 @@ export default {
 
 <style lang="stylus" scoped>
   @import '~common/stylus/variable'
+  .bgYellow
+    background rgb(250, 180, 88)!important
   .margin-top-2
     margin-top .2rem
   .color-yellow
@@ -326,9 +303,10 @@ export default {
   .icon-yuanshixin
     font-size 10px  
   .lookApproval
+    position absolute
     float left
     width 100%
-    height auto
+    height 100%
     background $color-background
     .main-body
       float left

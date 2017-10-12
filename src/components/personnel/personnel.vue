@@ -19,7 +19,7 @@
           <div class="items">人员管理</div>
           <i class="iconfont icon-xiangzuo"></i>
         </router-link>
-        <router-link tag="li" to="/materialManage" class="content-item border-bottom">
+        <router-link v-if="0" tag="li" to="/materialManage" class="content-item border-bottom">
           <div class="icon-material"></div>
           <div class="items">材料管理</div>
           <i class="iconfont icon-xiangzuo"></i>

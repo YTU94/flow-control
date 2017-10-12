@@ -1,17 +1,20 @@
 <template>
   <!-- 已选材料 -->
 <div>
+  <transition name="fade">
+      <m-dialog  :msg="message" btn="" v-show="dialog === 1"></m-dialog>
+    </transition>
   <div class="material-m" v-show="page===0">
     <div class="header border-bottom header-bg">
-      <router-link  class="h-back" to='/approvalDetail'>
+      <span  class="h-back" @click="backToDe()" >
         <i class="iconfont icon-xiangzuo"></i>返回
-      </router-link>
+      </span>
       已选（{{this.materialC.length}}）
-      <span class="right">确定</span>
+      <span class="right" @click="backToDe()">确定</span>
     </div>
     <div class="m-m-content">
       <ul class="m-m-ul">
-        <li class="m-item-li" v-for="(item, index) in materialC" >
+        <li class="m-item-li" v-for="(item, index) in materialC" :key="index">
           <p>材料1</p>
           <div class="m-item-s">
             <div class="m-item">
@@ -27,12 +30,13 @@
               <div class="m-item-footer border-top">
                 <div class="m-item-f-num" v-show="cNum === 1">
                   <span class="f-num-label">数量:</span>
-                  <input type="text" class="f-num-input" v-on:input="addNum(index, item.stuff_price, $event)">
+                  <!-- <input type="text" class="f-num-input" v-on:input="addNum(index, item.stuff_price, $event)"> -->
+                  <input type="text" class="f-num-input" v-model="mNumber[index]">
                 </div>
-                <div class="m-item-f-total" v-show="cContent === 1">总价：<span class="f-total-num"></span></div>
+                <div class="m-item-f-total" v-show="cTotal === 1">总价：<span class="f-total-num">{{mNumber[index] * item.stuff_price}}</span></div>
               </div>
             </div>
-            <div class="m-item-del" @click="delMaterialC(index, $event)">删除</div>
+            <div class="m-item-del" @click="delMaterialC(index)">删除{{index}}</div>
           </div>
         </li>
       </ul>
@@ -85,9 +89,16 @@
 
 <script>
 import api from 'api/api'
+import store from 'store/store'
+import MDialog from 'components/dialog/dialog'
 export default {
+  components: {
+    MDialog
+  },
   data () {
     return {
+      dialog: 0,
+      message: '',
       // page 参数
       page: 0,
       materialSelect: 0,
@@ -101,10 +112,9 @@ export default {
       materialC: [], // 选好的材料
       pid: '', // 流程id
       // 材料
+      mNumber: [],
       level: 0,
       materialOne: [],
-      // materialTwo: [],
-      // materialThree: [],
       materialFour: [],
       // 添加材料的内容选项
       cId: 1,
@@ -123,28 +133,44 @@ export default {
       handler() { // 选返回的材料
         var arr = []
         var that = this
-        setTimeout(function() {
-          if (!this.page) {
-            that.touch()
-          }
-        }, 1000)
         if (this.materialC) {
           for (let i = 0; i < this.materialC.length; i++) {
             arr.splice(i, 0, [this.materialC[i].id, this.materialC[i].materialNum])
           }
         }
         this.materialCB = arr
+        setTimeout(function() {
+          if (!this.page) {
+            that.touch()
+          }
+        }, 1000)
       },
-      deep: true
+      deep: false
+    }
+  },
+  computed: {
+    materialCName () { // 选好的材料的id && num
+      var a = []
+      for (let i = 0; i < this.materialC.length; i++) {
+        if (this.materialC[i].name) {
+          a[i] = [this.materialC[i].name, parseInt(this.materialC[i].id), parseInt(this.mNumber[i])]
+        }
+      }
+      console.log(a)
+      return a
     }
   },
   created () {
     // 初始化，渲染第一个值
   },
   mounted() {
-    console.log('materialCB', this.materialCB)
+    // if (this.$store.state.materialC.length > 0) {
+    //   this.materialC = this.$store.state.materialC
+    // } else {
+    //   console.log('初次添加')
+    // }
     this.pid = this.$route.params.id
-    // this._getStuffAtt(this.pid)
+    this._getStuffAtt(this.pid)
   },
   methods: {
     // 选择主料
@@ -190,39 +216,64 @@ export default {
         item.materialTotal = 0
         e.target.className = 'iconfont icon-yuanquan item-add'
         this.materialC.push(item)
-        console.log('materialC', this.materialC)
+        console.log('materialC+++', this.materialC)
       } else {
-        e.target.className = 'iconfont icon-jia item-add'
-        // this.materialC.push(item)
-        console.log('materialC', this.materialC)
+        e.target.className = 'iconfont icon-yuanquan item-add'
+        console.log('materialC', '添加过了')
       }
     },
     // 搜罗
     searchV () {
-      console.log(this)
       this._stuffSearch(this.$refs.search.value)
     },
     // del
-    delMaterialC(i, e) {
-      // console.log(e.target.parentNode.parentNode)
-      // e.target.parentNode.parentNode.className = 'm-item-li vnone'
+    delMaterialC(i) {
       this.materialC.splice(i, 1)
-      console.log('2222')
-      console.log(this.materialC)
     },
-    addNum (i, p, e) {
-      var t = e.target.value
-      this.materialC[parseInt(i)].materialNum = t
-      this.materialC[parseInt(i)].materialTotal = t * p
-      this.materialCB[parseInt(i)][1] = t
-      e.target.parentNode.nextElementSibling.children[0].innerHTML = t * p
-      console.log(this.materialCB)
+    // 放回
+    backToDe() {
+      let s = false
+      let that = this
+      let forNum = /^\d{1,}$/
+      // debugger
+      if (this.materialC.length === this.mNumber.length) {
+        if (this.materialC.length === 0) {
+          this.$router.push({name: 'approvalDetail', params: {materialCName: this.materialCName}})
+        } else { // 有数量的情况
+          for (let i = 0; i < this.mNumber.length; i++) {
+            if (!forNum.test(this.mNumber[i])) {
+              s = true
+            }
+          }
+          if (s === true) {
+            this.dialog = 1
+            this.message = '请填写数量'
+            setTimeout(function() {
+              that.dialog = 0
+            }, 1000)
+          } else {
+            this.$router.push({name: 'approvalDetail', params: {materialCName: this.materialCName}})
+          }
+        }
+      } else if (parseInt(this.cNum) === 0) { // 没有数量的情况
+        this.$router.push({name: 'approvalDetail', params: {materialCName: this.materialCName}})
+      } else {
+        this.dialog = 1
+        this.message = '请填写数量'
+        setTimeout(function() {
+          that.dialog = 0
+        }, 1000)
+      }
+      console.log(store)
+    },
+    showMsg (data) {
+      console.log(data)
+      this.dialog = parseInt(data)
     },
     _getScience() {
       api.getScience(sessionStorage.id, sessionStorage.token)
         .then(res => {
           if (res.code === 200) {
-            console.log(res)
             this.materialOne = res.message
             this.level = 1
           }
@@ -235,7 +286,6 @@ export default {
       api.getTwoScience(sessionStorage.id, sessionStorage.token, id)
         .then(res => {
           if (res.code === 200) {
-            console.log(res)
             this.materialOne = res.message
             this.level = 2
           }
@@ -248,7 +298,6 @@ export default {
       api.getThreeScience(sessionStorage.id, sessionStorage.token, id)
         .then(res => {
           if (res.code === 200) {
-            console.log(res)
             this.materialOne = res.message
             this.level = 3
           }
@@ -261,7 +310,6 @@ export default {
       api.getFourScience(sessionStorage.id, sessionStorage.token, id)
         .then(res => {
           if (res.code === 200) {
-            console.log(res)
             this.materialFour = res.message
           }
         })
@@ -273,7 +321,6 @@ export default {
       api.stuffSearch(sessionStorage.id, sessionStorage.token, keyword)
         .then(res => {
           if (res.code === 200) {
-            console.log(res)
             this.materialFour = res.message
           }
         })
@@ -285,13 +332,12 @@ export default {
       api.getStuffAtt(sessionStorage.id, sessionStorage.token, pid)
         .then(res => {
           if (res.code === 200) {
-            console.log(res)
             this.cId = res.message[0].is_id
             this.cName = res.message[0].is_name
-            this.cSize = res.message[0].is_sizec
+            this.cSize = res.message[0].is_size
             this.cSupplier = res.message[0].is_supplier
-            this.cUnit = res.message[0].is_unitc
-            this.cPrice = res.message[0].is_pricec
+            this.cUnit = res.message[0].is_unit
+            this.cPrice = res.message[0].is_price
             this.cNum = res.message[0].is_num
             this.cTotal = res.message[0].is_total
             this.cContent = res.message[0].is_content
@@ -346,8 +392,6 @@ export default {
 
 <style lang="stylus" scoped>
 @import '~common/stylus/variable'
-.vnone
-  display none
 .swipeleft 
     transform:translateX(-1.5rem)
 .material-choose, .material-m

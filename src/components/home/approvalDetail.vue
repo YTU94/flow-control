@@ -32,7 +32,7 @@
           <input class="f-input" v-model="contentValue" type="text" readonly>
         </div>
         <div class="select-content" v-show="select1 === 1">
-          <p class="border-bottom select-item" v-for="item in approvalPeople" @click="addFlow.rname = contentValue = item.name, select1 = 0" :key="item.id">{{item.name}}   {{item.rname}}</p>
+          <p class="border-bottom select-item" v-for="item in approvalPeople" @click="addFlow.rname = contentValue = item.name, addFlow.rnameId = item.id, select1 = 0" :key="item.id">{{item.name}}   {{item.rname}}</p>
         </div>
       </section>
       <button class="btn" @click="_addApprovalFlow" :class="{disabledStyle: checkValue}" :disabled="checkValue">执行</button>
@@ -63,16 +63,18 @@ export default {
       nodeArray: '',
       addFlow: {
         proId: '', // 流程ID int
-        dataId: '', // 材料ID int
+        dataId: [], // 材料ID int
         num: '', // 数量 int
         content: '', // 审批内容 string
-        rname: '' // 审批人 string
-      }
+        rname: '', // 审批人 string
+        rnameId: '' // 审批人ID
+      },
+      pid: '' // 流程id
     }
   },
   computed: {
     checkValue: function () {
-      if (!this.materialValue || !this.addFlow.num || !this.addFlow.content || !this.contentValue) {
+      if (!this.materialValue || !this.addFlow.dataId || !this.addFlow.content || !this.contentValue) {
         return true
       } else {
         return false
@@ -81,18 +83,40 @@ export default {
   },
   created () {
     console.log(this.$route.params)
-    // 首页路由传过来 流程的参数 没有编号pid 把id值当编号 *暂时*
-    this.pid = this.$route.params.id
-    // this.name = this.$route.params.nodeArray.split('-')[1] || ''
-    // 刷新后 this.$route.params 是空的 所有会提示split()方法有错
-    this.name = this.$route.params.nodeArray || ''
-    this.name = this.name.split('-')[1]
-    this.nodeArray = this.$route.params.nodeArray
-    // this.start = this.$route.params.start
+    if (this.$route.params.materialCName) {
+      if (this.$route.params.materialCName.length > 3) {
+        var v = this.$route.params.materialCName
+        this.materialValue = v[0][0] + '，' + v[1][0] + '，' + v[2][0] + '等' + v.length + '种'
+      } else {
+        for (let i = 0; i < this.$route.params.materialCName.length; i++) {
+          this.materialValue += this.$route.params.materialCName[i][0] + '，'
+        }
+        this.materialValue = this.materialValue.slice(0, this.materialValue.length - 1)
+      }
+      for (let i = 0; i < this.$route.params.materialCName.length; i++) {
+        this.$route.params.materialCName[i].splice(0, 1)
+      }
+      this.addFlow.dataId = this.$route.params.materialCName
+    } else {
+      console.log('从首页过来的')
+      // 首页路由传过来 流程的参数 没有编号pid 把id值当编号 *暂时*
+      this.pid = this.$route.params.id
+      sessionStorage.pidForFlow = this.pid
+      // this.name = this.$route.params.nodeArray.split('-')[1] || ''
+      // 刷新后 this.$route.params 是空的 所有会提示split()方法有错
+      this.name = this.$route.params.nodeArray || ''
+      this.name = this.name.split('-')[1]
+      sessionStorage.rnameForFlow = this.name
+      this.nodeArray = this.$route.params.nodeArray
+      sessionStorage.nodeArrayForFlow = this.nodeArray
+      // this.start = this.$route.params.start
+    }
     // 初始化获取材料和审批人
+    this.pid = sessionStorage.pidForFlow !== '' ? sessionStorage.pidForFlow : ''
+    this.name = sessionStorage.rnameForFlow !== '' ? sessionStorage.rnameForFlow : ''
+    this.nodeArray = sessionStorage.nodeArrayForFlow !== '' ? sessionStorage.nodeArrayForFlow : ''
     this._getMaterialList(sessionStorage.id, sessionStorage.token)
-    this._getApprovalPeople(sessionStorage.id, sessionStorage.token, this.name)
-    this.materialObj = {}
+    this._getApprovalPeople(sessionStorage.id, sessionStorage.token, sessionStorage.rnameForFlow)
   },
   mounted () {
   },
@@ -131,7 +155,7 @@ export default {
     },
     // 添加一个审批流程——执行
     _addApprovalFlow() {
-      api.addApprovalFlow(sessionStorage.id, sessionStorage.token, this.$route.params.id, this.addFlow.dataId, this.addFlow.num, this.addFlow.content, this.addFlow.rname)
+      api.addApprovalFlow(sessionStorage.id, sessionStorage.token, this.pid, this.addFlow.dataId, this.addFlow.content, this.addFlow.rname, this.addFlow.rnameId)
         .then(res => {
           var that = this
           if (res.code === 200) {
@@ -200,6 +224,7 @@ export default {
             border none
             height 1.2rem
             line-height 1.2rem
+            width 5.8rem
         .select-content
           background #E9F0EF
           padding .2rem .4rem

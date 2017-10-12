@@ -62,9 +62,17 @@ export default {
   getApproval (uid, token) {
     return fetch('/web/index.php?r=api%2Fgetprocess', {uid: uid, token: token})
   },
-  // 添加审批
-  addApprovalFlow (uid, token, proId, dataId, num, content, rname) {
-    return fetch('/web/index.php?r=api%2Faddapproval', {uid: uid, token: token, pro_id: proId, data_id: dataId, num: num, content: content, rname: rname})
+  // 添加审批 *更改_吕
+  addApprovalFlow (uid, token, proId, dataId, content, rname, rnameId) {
+    return fetch('/web/index.php?r=api%2Faddapproval', {
+      uid: uid,
+      token: token,
+      pro_id: proId,
+      data_id: dataId,
+      content: content,
+      rname: rname,
+      rname_id: rnameId
+    })
   },
   // 资金审批
   moneyApproval (uid, token, content, rname, fId, state) {
