@@ -20,43 +20,43 @@ vue-cli启动 采用vue + vue-router + axios + vuex(后来没用了，不过安�
 src<br>
 -- api // 所有的ajax的请求 都在这里<br>
 -- common // 存放组件公用的img && css <br>
-  -- stylus<br>
-    -- variable.styl // 所有公用的css 颜色 字体 之类<br>
-    -- approval.styl // 流程审批3种状态页面的 公用css<br>
+---- stylus<br>
+------ variable.styl // 所有公用的css 颜色 字体 之类<br>
+------ approval.styl // 流程审批3种状态页面的 公用css<br>
 -- components<br>
-  -- approval // 流程审批<br>
-    -- state // 3种审批的状态<br>
-      -- approval.All // 全部<br>
-      -- approvalAlready // 已发起<br>
-      -- approvalOK // 已审批<br>
-      -- approvalUn // 未审批<br>
-    -- approval // 流程审批页面<br>
-    -- lookApproval // 查看流程详情页面<br>
-  -- dialog // 弹出框组件<br>
-  -- home<br>
-    -- addFlow // 添加流程页<br>
-    -- addMember // 添加流程中 -> 添加人员角色页<br>
-    -- approvalDetail // 流程详情页面<br>
-    -- home // 主页<br>
-  -- login // 登录页<br>
-  -- m-footer // 底栏组件<br>
-  -- m-hader // 顶部组件<br>
-  -- material // 材料管理组件<br>
-  -- personnel<br>
-    -- materialAdd, materialManage, materialUpdate // 废弃页面,个人中心页面已隐藏<br>
-    -- memberAdd // 添加人员<br>
-    -- mamberMange // 人员管理<br>
-    -- memberUpdate // 人员编辑<br>
-    -- roleAdd // 角色添加<br>
-    -- roleManage // 角色管理<br>
-    -- roleUpdate // 角色编辑<br>
-  -- tab // 审批流程 tab组件 <br>
+---- approval // 流程审批<br>
+------ state // 3种审批的状态<br>
+-------- approval.All // 全部<br>
+-------- approvalAlready // 已发起<br>
+-------- approvalOK // 已审批<br>
+-------- approvalUn // 未审批<br>
+------ approval // 流程审批页面<br>
+------ lookApproval // 查看流程详情页面<br>
+---- dialog // 弹出框组件<br>
+---- home<br>
+------ addFlow // 添加流程页<br>
+------ addMember // 添加流程中 -> 添加人员角色页<br>
+------ approvalDetail // 流程详情页面<br>
+------ home // 主页<br>
+---- login // 登录页<br>
+---- m-footer // 底栏组件<br>
+---- m-hader // 顶部组件<br>
+---- material // 材料管理组件<br>
+---- personnel<br>
+------ materialAdd, materialManage, materialUpdate // 废弃页面,个人中心页面已隐藏<br>
+------ memberAdd // 添加人员<br>
+------ mamberMange // 人员管理<br>
+------ memberUpdate // 人员编辑<br>
+------ roleAdd // 角色添加<br>
+------ roleManage // 角色管理<br>
+------ roleUpdate // 角色编辑<br>
+---- tab // 审批流程 tab组件 <br>
 -- filter // 全局过滤器<br>
 -- store // 状态管理（不过后来没用到）<br>
 static<br>
-  -- css<br>
-    -- iconfont.css // icon图标 （图片较少，所以都放在组件中）<br>
-    -- index.css // 一些基础样式<br>
+---- css<br>
+------ iconfont.css // icon图标 （图片较少，所以都放在组件中）<br>
+------ index.css // 一些基础样式<br>
 
 ## 注意
 
