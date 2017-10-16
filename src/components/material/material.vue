@@ -135,7 +135,7 @@ export default {
         var that = this
         if (this.materialC) {
           for (let i = 0; i < this.materialC.length; i++) {
-            arr.splice(i, 0, [this.materialC[i].id, this.materialC[i].materialNum])
+            arr.splice(i, 0, [this.materialC[i].name, parseInt(this.materialC[i].id), parseInt(this.mNumber[i])])
           }
         }
         this.materialCB = arr
@@ -152,8 +152,8 @@ export default {
     materialCName () { // 选好的材料的id && num
       var a = []
       for (let i = 0; i < this.materialC.length; i++) {
-        if (this.materialC[i].name) {
-          a[i] = [this.materialC[i].name, parseInt(this.materialC[i].id), parseInt(this.mNumber[i])]
+        if (this.materialC[i].stuff_name) {
+          a[i] = [this.materialC[i].stuff_name, parseInt(this.materialC[i].id), parseInt(this.mNumber[i])]
         }
       }
       console.log(a)
@@ -164,11 +164,13 @@ export default {
     // 初始化，渲染第一个值
   },
   mounted() {
-    // if (this.$store.state.materialC.length > 0) {
-    //   this.materialC = this.$store.state.materialC
-    // } else {
-    //   console.log('初次添加')
-    // }
+    if (this.$route.params.materialC.length > 0 && this.$route.params.mNumber.length > 0) {
+      debugger
+      this.mNumber = this.$route.params.mNumber
+      this.materialC = this.$route.params.materialC
+    } else {
+      console.log('初次添加')
+    }
     this.pid = this.$route.params.id
     this._getStuffAtt(this.pid)
   },
@@ -235,10 +237,9 @@ export default {
       let s = false
       let that = this
       let forNum = /^\d{1,}$/
-      // debugger
       if (this.materialC.length === this.mNumber.length) {
         if (this.materialC.length === 0) {
-          this.$router.push({name: 'approvalDetail', params: {materialCName: this.materialCName}})
+          this.$router.push({name: 'approvalDetail', params: {materialCName: this.materialCName, materialC: this.materialC, mNumber: this.mNumber}})
         } else { // 有数量的情况
           for (let i = 0; i < this.mNumber.length; i++) {
             if (!forNum.test(this.mNumber[i])) {
@@ -252,11 +253,11 @@ export default {
               that.dialog = 0
             }, 1000)
           } else {
-            this.$router.push({name: 'approvalDetail', params: {materialCName: this.materialCName}})
+            this.$router.push({name: 'approvalDetail', params: {materialCName: this.materialCName, materialC: this.materialC, mNumber: this.mNumber}})
           }
         }
       } else if (parseInt(this.cNum) === 0) { // 没有数量的情况
-        this.$router.push({name: 'approvalDetail', params: {materialCName: this.materialCName}})
+        this.$router.push({name: 'approvalDetail', params: {materialCName: this.materialCName, materialC: this.materialC, mNumber: this.mNumber}})
       } else {
         this.dialog = 1
         this.message = '请填写数量'
@@ -265,6 +266,7 @@ export default {
         }, 1000)
       }
       console.log(store)
+      console.log('===>>>', this.materialCName)
     },
     showMsg (data) {
       console.log(data)
@@ -300,6 +302,7 @@ export default {
           if (res.code === 200) {
             this.materialOne = res.message
             this.level = 3
+            console.log(res)
           }
         })
         .catch(error => {
@@ -311,6 +314,7 @@ export default {
         .then(res => {
           if (res.code === 200) {
             this.materialFour = res.message
+            console.log(res)
           }
         })
         .catch(error => {
@@ -322,6 +326,7 @@ export default {
         .then(res => {
           if (res.code === 200) {
             this.materialFour = res.message
+            console.log(res)
           }
         })
         .catch(error => {

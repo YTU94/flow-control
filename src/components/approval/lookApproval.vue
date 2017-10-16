@@ -8,7 +8,7 @@
     <div class="main-body">
       <!-- main body -->
       <div class="flow">
-        <span class="f-state" v-bind:class="{bgYellow: parseInt(state) !== 2}">{{parseInt(state) === 2 ? '失败' : '审批中'}}</span>
+        <span class="f-state" v-bind:class="{bgYellow: parseInt(istate) !== 2}">{{parseInt(istate) === 2 ? '失败' : (parseInt(istate) === 1 ? '成功' : '审批中')}}</span>
         <p class="f-content">编号：{{approval.rid}}</p>
         <p class="f-content">名称：{{approval.pname}}</p>
         <p class="f-content">审批流程：</p>
@@ -122,6 +122,7 @@ export default {
       nextReApproval: '', // 下级审批人
       content: '', // 当前审批内容,
       state: '', // 审批状态
+      istate: '', // add 吕
       approval: {
         all: [], // 所有记录
         state: '', // 状态
@@ -181,7 +182,10 @@ export default {
       api.getApprovalInfo(sessionStorage.id, sessionStorage.token, fid)
         .then(res => {
           if (res.code === 200) {
+            console.log(res)
+            debugger
             let p = res.message.process[0]
+            this.istate = res.message.wfile.state
             this.state = res.message.state // state0
             this.approval.all = res.message.all
             this.approval.rid = res.message.rid || ''

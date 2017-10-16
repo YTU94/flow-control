@@ -61,6 +61,8 @@ export default {
       contentValue: '',
       name: '',
       nodeArray: '',
+      materialC: '', // 缓存
+      mNumber: '', // 缓存
       addFlow: {
         proId: '', // 流程ID int
         dataId: [], // 材料ID int
@@ -74,7 +76,8 @@ export default {
   },
   computed: {
     checkValue: function () {
-      if (!this.materialValue || !this.addFlow.dataId || !this.addFlow.content || !this.contentValue) {
+      // 删除 !this.materialValue || 不需要材料必选项
+      if (!this.addFlow.dataId || !this.addFlow.content || !this.contentValue) {
         return true
       } else {
         return false
@@ -83,6 +86,12 @@ export default {
   },
   created () {
     console.log(this.$route.params)
+    if (this.$route.params.mNumber) {
+      this.mNumber = this.$route.params.mNumber
+    }
+    if (this.$route.params.materialC) {
+      this.materialC = this.$route.params.materialC
+    }
     if (this.$route.params.materialCName) {
       if (this.$route.params.materialCName.length > 3) {
         var v = this.$route.params.materialCName
@@ -125,7 +134,7 @@ export default {
       if (parseInt(a) === 1) {
         this.select1 = 1
       } else {
-        this.$router.push({name: 'material', params: {id: this.pid}})
+        this.$router.push({name: 'material', params: {id: this.pid, materialC: this.materialC, mNumber: this.mNumber}})
       }
     },
     // 获取材料 ->要改的
