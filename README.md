@@ -75,13 +75,13 @@ api.js中
 
 主机名： yuanhang.youledi.cn
 用户名： db_yuanhang
-密码: yuanhang2017
+密码: ***
 
 ## 数据库 MySQL (和FTP一样)
 
 主机名： yuanhang.youledi.cn
 用户名： db_yuanhang
-密码: yuanhang2017
+密码: ***
 
 
 
